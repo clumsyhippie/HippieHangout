@@ -3,8 +3,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hippie Hangout</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Uncial Antiqua Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&amp;display=swap">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Poppins:wght@300;400;600&display=swap');
         
         body {
             font-family: 'Poppins', sans-serif;
@@ -13,19 +17,18 @@
             padding: 0;
         }
         
-        .main-title {
-            font-family: 'Pacifico', cursive;
-            color: #FF9D5C; /* Warmer orange color */
-            text-shadow: 0 4px 0 #D35400, 
-                         0 8px 0 #A04000,
-                         0 12px 10px rgba(0,0,0,0.4);
-            transform: perspective(500px) rotateX(10deg);
-        }
-        
-        .subtitle {
-            font-family: 'Pacifico', cursive;
-            color: #FFD3A5; /* Lighter warm color */
-            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        .sign-text {
+            font-family: 'Uncial Antiqua', cursive;
+            color: #FFE0B2;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            letter-spacing: 1px;
+            /* Engraved/inset text effect */
+            text-shadow: 
+                0px 1px 1px rgba(0, 0, 0, 0.8),
+                0px -1px 0px rgba(255, 235, 205, 0.2);
         }
         
         .nav-arrow {
@@ -51,60 +54,167 @@
         }
         
         .room-overlay {
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(1px);
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .mute-button, .exit-button {
+            transition: all 0.3s;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .mute-button:hover, .exit-button:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 4px 20px rgba(255, 165, 0, 0.4);
+            border-color: rgba(255, 165, 0, 0.8);
+        }
+        
+        .door-container {
+            transition: opacity 1.5s ease-in-out;
+        }
+        
+        .sign-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .sign-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            text-align: center;
+        }
+        
+        /* Knock animation */
+        @keyframes knock {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .knocking {
+            animation: knock 0.2s ease-in-out 3;
         }
     </style>
-<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.left-0{left:0px}.left-6{left:1.5rem}.right-0{right:0px}.right-6{right:1.5rem}.top-1\/2{top:50%}.top-8{top:2rem}.z-40{z-index:40}.z-50{z-index:50}.mb-2{margin-bottom:0.5rem}.flex{display:flex}.h-10{height:2.5rem}.h-screen{height:100vh}.w-10{width:2.5rem}.w-screen{width:100vw}.-translate-y-1\/2{--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.items-center{align-items:center}.justify-center{justify-content:center}.overflow-hidden{overflow:hidden}.rounded-full{border-radius:9999px}.p-4{padding:1rem}.text-center{text-align:center}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-6xl{font-size:3.75rem;line-height:1}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-0{opacity:0}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}@media (min-width: 768px){.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-7xl{font-size:4.5rem;line-height:1}}</style></head>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.bottom-10{bottom:2.5rem}.left-0{left:0px}.left-1\/2{left:50%}.left-4{left:1rem}.left-6{left:1.5rem}.right-0{right:0px}.right-4{right:1rem}.right-6{right:1.5rem}.top-0{top:0px}.top-1\/2{top:50%}.top-1\/4{top:25%}.top-4{top:1rem}.top-8{top:2rem}.z-10{z-index:10}.z-40{z-index:40}.z-50{z-index:50}.mt-4{margin-top:1rem}.flex{display:flex}.hidden{display:none}.h-screen{height:100vh}.h-auto{height:auto}.max-h-full{max-height:100%}.w-screen{width:100vw}.w-auto{width:auto}.max-w-full{max-width:100%}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.-translate-y-1\/2{--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-center{justify-content:center}.overflow-hidden{overflow:hidden}.rounded-full{border-radius:9999px}.bg-black{--tw-bg-opacity:1;background-color:rgb(0 0 0 / var(--tw-bg-opacity, 1))}.bg-opacity-50{--tw-bg-opacity:0.5}.p-3{padding:0.75rem}.p-4{padding:1rem}.px-4{padding-left:1rem;padding-right:1rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-0{opacity:0}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-1000{transition-duration:1000ms}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}@media (min-width: 768px){.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}</style></head>
 <body>
     <div class="relative h-screen w-screen overflow-hidden">
-        <!-- Audio Elements (as placeholders) -->
+        <!-- Audio Elements -->
+        <!-- Door interaction sounds -->
+        <audio id="knock-sound" src="sounds/knock.mp3" preload="auto"></audio>
+        <audio id="door-open-sound" src="sounds/dooropen.mp3" preload="auto"></audio>
+        
+        <!-- Entry sounds -->
         <audio id="living-sound" src="Sounds/living.mp4" preload="auto"></audio>
         <audio id="kitchen-sound" src="Sounds/kitchen.mp4" preload="auto"></audio>
         <audio id="porch-sound" src="Sounds/porch.mp4" preload="auto"></audio>
         <audio id="garden-sound" src="Sounds/garden.mp4" preload="auto"></audio>
         
-        <!-- Navigation Arrows -->
-        <div class="absolute left-6 top-1/2 transform -translate-y-1/2 z-50">
-            <button id="left-arrow" class="nav-arrow text-white p-4 rounded-full focus:outline-none flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
-                </svg>
+        <!-- Ambient sounds -->
+        <audio id="amb-door" src="Sounds/ambDoor.mp3" preload="auto" loop=""></audio>
+        <audio id="amb-living" src="Sounds/ambLiving.mp3" preload="auto" loop=""></audio>
+        <audio id="amb-kitchen" src="Sounds/ambKitchen.mp3" preload="auto" loop=""></audio>
+        <audio id="amb-porch" src="Sounds/ambPorch.mp3" preload="auto" loop=""></audio>
+        <audio id="amb-garden" src="Sounds/ambGarden.mp3" preload="auto" loop=""></audio>
+        
+        <!-- Mute Button -->
+        <div class="absolute top-4 left-4 z-50">
+            <button id="mute-button" class="mute-button text-white p-3 rounded-full focus:outline-none flex items-center justify-center">
+                <i id="sound-on-icon" class="fas fa-volume-up text-xl"></i>
+                <i id="sound-off-icon" class="fas fa-volume-mute text-xl hidden"></i>
             </button>
         </div>
         
-        <div class="absolute right-6 top-1/2 transform -translate-y-1/2 z-50">
-            <button id="right-arrow" class="nav-arrow text-white p-4 rounded-full focus:outline-none flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
-                </svg>
+        <!-- Exit Button (only visible in main content) -->
+        <div id="exit-button" class="absolute top-4 right-4 z-50 opacity-0 pointer-events-none">
+            <button class="exit-button text-white p-3 rounded-full focus:outline-none flex items-center justify-center">
+                <i class="fas fa-door-open text-xl"></i>
             </button>
         </div>
         
-        <!-- Title that stays on all pages -->
-        <div class="absolute top-8 left-0 right-0 z-40 text-center">
-            <h1 class="main-title text-6xl md:text-7xl mb-2">Hippie Hangout</h1>
-            <h2 id="room-subtitle" class="subtitle text-3xl md:text-4xl">Living Room</h2>
+        <!-- Front Door Page -->
+        <div id="front-door" class="room absolute inset-0" style="background-image: url('images/front.gif');">
+            <div class="absolute inset-0 flex items-center justify-center">
+                <!-- Door Container -->
+                <div id="door-container" class="door-container relative cursor-pointer" style="opacity: 1;">
+                    <!-- Static Door Image (shown initially) -->
+                    <img id="door-static" src="images/door.gif" alt="Door" class="w-auto h-auto max-w-full max-h-full" style="opacity: 1;">
+                    
+                    <!-- Door GIF (shown when clicked) -->
+                    <img id="door-gif" src="images/door.gif" alt="Door Opening" class="absolute top-0 left-0 w-auto h-auto max-w-full max-h-full opacity-0" style="opacity: 0;">
+                    
+                    <!-- Wooden Sign Image -->
+                    <div class="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                        <div class="sign-container">
+                            <img src="images/sign.png" alt="Wooden Sign" class="w-auto h-auto" style="min-width: 220px;">
+                            <div class="sign-overlay">
+                                <h1 class="sign-text text-xl">Hippie Hangout</h1>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Click Instruction -->
+                    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-center">
+                        <p class="text-white text-lg bg-black bg-opacity-50 px-4 py-2 rounded-full">Click to Enter</p>
+                    </div>
+                </div>
+            </div>
         </div>
         
-        <!-- Living Room -->
-        <div id="living-room" class="room absolute inset-0" style="background-image: url('Hippie Hangout/images/living.gif');">
-            <div class="room-overlay absolute inset-0"></div>
-        </div>
-        
-        <!-- Kitchen -->
-        <div id="kitchen" class="room absolute inset-0 opacity-0 pointer-events-none" style="background-image: url('Hippie Hangout/images/kitchen.gif');">
-            <div class="room-overlay absolute inset-0"></div>
-        </div>
-        
-        <!-- Porch -->
-        <div id="porch" class="room absolute inset-0 opacity-0 pointer-events-none" style="background-image: url('Hippie Hangout/images/porch.gif');">
-            <div class="room-overlay absolute inset-0"></div>
-        </div>
-        
-        <!-- Garden -->
-        <div id="garden" class="room absolute inset-0 opacity-0 pointer-events-none" style="background-image: url('Hippie Hangout/images/garden.gif');">
-            <div class="room-overlay absolute inset-0"></div>
+        <!-- Main Content (initially hidden) -->
+        <div id="main-content" class="absolute inset-0 transition-opacity duration-1000 opacity-0 pointer-events-none">
+            <!-- Navigation Arrows -->
+            <div class="absolute left-6 top-1/2 transform -translate-y-1/2 z-50">
+                <button id="left-arrow" class="nav-arrow text-white p-4 rounded-full focus:outline-none flex items-center justify-center">
+                    <i class="fas fa-chevron-left text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="absolute right-6 top-1/2 transform -translate-y-1/2 z-50">
+                <button id="right-arrow" class="nav-arrow text-white p-4 rounded-full focus:outline-none flex items-center justify-center">
+                    <i class="fas fa-chevron-right text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Title that stays on all pages -->
+            <div class="absolute top-8 left-0 right-0 z-40 text-center flex flex-col items-center">
+                <div class="sign-container">
+                    <img src="images/sign.png" alt="Wooden Sign" class="w-auto h-auto" style="min-width: 320px;">
+                    <div class="sign-overlay">
+                        <h1 class="sign-text text-3xl md:text-4xl">Hippie Hangout</h1>
+                    </div>
+                </div>
+                <div class="sign-container mt-4" style="transform: scale(0.8);">
+                    <img src="images/sign.png" alt="Wooden Sign" class="w-auto h-auto" style="min-width: 200px;">
+                    <div class="sign-overlay">
+                        <h2 id="room-subtitle" class="sign-text text-lg md:text-xl">Living Room</h2>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Living Room -->
+            <div id="living-room" class="room absolute inset-0" style="background-image: url('images/living.gif');">
+                <div class="room-overlay absolute inset-0"></div>
+            </div>
+            
+            <!-- Kitchen -->
+            <div id="kitchen" class="room absolute inset-0 opacity-0 pointer-events-none" style="background-image: url('images/kitchen.gif');">
+                <div class="room-overlay absolute inset-0"></div>
+            </div>
+            
+            <!-- Porch -->
+            <div id="porch" class="room absolute inset-0 opacity-0 pointer-events-none" style="background-image: url('porch.gif');">
+                <div class="room-overlay absolute inset-0"></div>
+            </div>
+            
+            <!-- Garden -->
+            <div id="garden" class="room absolute inset-0 opacity-0 pointer-events-none" style="background-image: url('garden.gif');">
+                <div class="room-overlay absolute inset-0"></div>
+            </div>
         </div>
     </div>
 
@@ -113,6 +223,12 @@
             // Room Navigation
             const rooms = ['living-room', 'kitchen', 'porch', 'garden'];
             const roomNames = ['Living Room', 'Kitchen', 'Porch', 'Garden'];
+            
+            // Door interaction sounds
+            const knockSound = document.getElementById('knock-sound');
+            const doorOpenSound = document.getElementById('door-open-sound');
+            
+            // Entry sounds
             const roomSounds = {
                 'living-room': document.getElementById('living-sound'),
                 'kitchen': document.getElementById('kitchen-sound'),
@@ -120,10 +236,150 @@
                 'garden': document.getElementById('garden-sound')
             };
             
+            // Ambient sounds
+            const ambientSounds = {
+                'door': document.getElementById('amb-door'),
+                'living-room': document.getElementById('amb-living'),
+                'kitchen': document.getElementById('amb-kitchen'),
+                'porch': document.getElementById('amb-porch'),
+                'garden': document.getElementById('amb-garden')
+            };
+            
             let currentRoomIndex = 0;
+            let currentAmbientSound = ambientSounds['door'];
+            let isMuted = false;
+            let doorClicked = false;
+            
+            // Start door ambient sound
+            try {
+                ambientSounds['door'].volume = 0.7;
+                ambientSounds['door'].play().catch(e => {
+                    console.log("Door ambient audio playback prevented: ", e);
+                });
+            } catch (e) {
+                console.log("Error playing door ambient sound:", e);
+            }
+            
+            // Door interaction
+            const doorContainer = document.getElementById('door-container');
+            const doorStatic = document.getElementById('door-static');
+            const doorGif = document.getElementById('door-gif');
+            const frontDoorPage = document.getElementById('front-door');
+            const mainContent = document.getElementById('main-content');
+            const exitButton = document.getElementById('exit-button');
+            
+            doorContainer.addEventListener('click', function() {
+                // Prevent multiple clicks
+                if (doorClicked) return;
+                doorClicked = true;
+                
+                // First play knock sound and animate door slightly
+                try {
+                    knockSound.play().catch(e => {
+                        console.log("Knock sound playback prevented: ", e);
+                    });
+                } catch (e) {
+                    console.log("Error playing knock sound:", e);
+                }
+                
+                // Add knocking animation to door
+                doorStatic.classList.add('knocking');
+                
+                // After knock animation, play door open sound and show gif
+                setTimeout(() => {
+                    // Remove knocking animation
+                    doorStatic.classList.remove('knocking');
+                    
+                    // Play door open sound
+                    try {
+                        doorOpenSound.play().catch(e => {
+                            console.log("Door open sound playback prevented: ", e);
+                        });
+                    } catch (e) {
+                        console.log("Error playing door open sound:", e);
+                    }
+                    
+                    // Show the door GIF animation
+                    doorStatic.style.opacity = "0";
+                    doorGif.style.opacity = "1";
+                    
+                    // Fade out door ambient
+                    fadeOutSound(ambientSounds['door']);
+                    
+                    // After door animation, show main content
+                    setTimeout(() => {
+                        doorContainer.style.opacity = "0";
+                        
+                        setTimeout(() => {
+                            frontDoorPage.classList.add('opacity-0', 'pointer-events-none');
+                            mainContent.classList.remove('opacity-0', 'pointer-events-none');
+                            exitButton.classList.remove('opacity-0', 'pointer-events-none');
+                            
+                            // Start living room ambient
+                            currentAmbientSound = ambientSounds['living-room'];
+                            if (!isMuted) {
+                                fadeInSound(ambientSounds['living-room']);
+                            }
+                            
+                            // Play living room entry sound
+                            try {
+                                roomSounds['living-room'].play().catch(e => {
+                                    console.log("Living room sound playback prevented: ", e);
+                                });
+                            } catch (e) {
+                                console.log("Error playing living room sound:", e);
+                            }
+                            
+                            // Reset door clicked state for when user exits
+                            doorClicked = false;
+                        }, 500);
+                        
+                    }, 1500);
+                }, 900); // Wait for knock animation to complete
+            });
+            
+            // Exit button functionality
+            exitButton.addEventListener('click', function() {
+                // Play door open sound
+                try {
+                    doorOpenSound.play().catch(e => {
+                        console.log("Door open sound playback prevented: ", e);
+                    });
+                } catch (e) {
+                    console.log("Error playing door open sound:", e);
+                }
+                
+                // Fade out current ambient sound
+                if (currentAmbientSound) {
+                    fadeOutSound(currentAmbientSound);
+                }
+                
+                // Hide main content and show front door
+                mainContent.classList.add('opacity-0', 'pointer-events-none');
+                exitButton.classList.add('opacity-0', 'pointer-events-none');
+                
+                setTimeout(() => {
+                    // Reset door images
+                    doorStatic.style.opacity = "1";
+                    doorGif.style.opacity = "0";
+                    doorContainer.style.opacity = "1";
+                    
+                    // Show front door page
+                    frontDoorPage.classList.remove('opacity-0', 'pointer-events-none');
+                    
+                    // Start door ambient
+                    currentAmbientSound = ambientSounds['door'];
+                    if (!isMuted) {
+                        fadeInSound(ambientSounds['door']);
+                    }
+                }, 500);
+            });
             
             function showRoom(index) {
-                // Stop any currently playing sounds
+                const newRoomId = rooms[index];
+                const oldRoomId = rooms[currentRoomIndex];
+                
+                // Stop any currently playing entry sounds
                 Object.values(roomSounds).forEach(sound => {
                     if (!sound.paused) {
                         sound.pause();
@@ -131,18 +387,36 @@
                     }
                 });
                 
+                // Fade out current ambient sound if it exists
+                if (currentAmbientSound && !currentAmbientSound.paused) {
+                    fadeOutSound(currentAmbientSound);
+                }
+                
+                // Update room visibility
                 rooms.forEach((roomId, i) => {
                     const room = document.getElementById(roomId);
                     if (i === index) {
                         room.classList.remove('opacity-0', 'pointer-events-none');
                         
-                        // Play the sound for this room
-                        const sound = roomSounds[roomId];
-                        if (sound) {
-                            sound.play().catch(e => {
-                                console.log("Audio playback prevented: ", e);
-                                // This is expected if user hasn't interacted with the page yet
-                            });
+                        // Play the entry sound for this room
+                        try {
+                            const entrySound = roomSounds[roomId];
+                            if (entrySound) {
+                                entrySound.play().catch(e => {
+                                    console.log("Entry audio playback prevented: ", e);
+                                });
+                            }
+                        } catch (e) {
+                            console.log("Error playing entry sound:", e);
+                        }
+                        
+                        // Start the ambient sound for this room
+                        const ambSound = ambientSounds[roomId];
+                        if (ambSound) {
+                            currentAmbientSound = ambSound;
+                            if (!isMuted) {
+                                fadeInSound(ambSound);
+                            }
                         }
                     } else {
                         room.classList.add('opacity-0', 'pointer-events-none');
@@ -150,45 +424,106 @@
                 });
                 
                 // Update room subtitle
-                document.getElementById('room-subtitle').textContent = roomNames[index];
+                const roomSubtitle = document.getElementById('room-subtitle');
+                roomSubtitle.textContent = roomNames[index];
+                
+                // Update current room index
+                currentRoomIndex = index;
             }
             
+            function fadeOutSound(sound) {
+                if (!sound || sound.paused || sound.volume === 0) return;
+                
+                let vol = sound.volume;
+                const fadeOut = setInterval(function() {
+                    if (vol > 0.1) {
+                        vol -= 0.1;
+                        sound.volume = vol;
+                    } else {
+                        sound.pause();
+                        sound.currentTime = 0;
+                        sound.volume = 0.7; // Reset volume for next time
+                        clearInterval(fadeOut);
+                    }
+                }, 100);
+            }
+            
+            function fadeInSound(sound) {
+                if (!sound) return;
+                
+                sound.volume = 0;
+                sound.play().then(() => {
+                    let vol = 0;
+                    const fadeIn = setInterval(function() {
+                        if (vol < 0.6) {
+                            vol += 0.1;
+                            sound.volume = vol;
+                        } else {
+                            sound.volume = 0.7;
+                            clearInterval(fadeIn);
+                        }
+                    }, 100);
+                }).catch(e => {
+                    console.log("Ambient audio playback prevented: ", e);
+                });
+            }
+            
+            // Mute button functionality
+            const muteButton = document.getElementById('mute-button');
+            const soundOnIcon = document.getElementById('sound-on-icon');
+            const soundOffIcon = document.getElementById('sound-off-icon');
+            
+            muteButton.addEventListener('click', function() {
+                isMuted = !isMuted;
+                
+                if (isMuted) {
+                    // Mute all sounds
+                    Object.values(ambientSounds).forEach(sound => {
+                        if (!sound.paused) {
+                            sound.volume = 0;
+                        }
+                    });
+                    
+                    // Show muted icon
+                    soundOnIcon.classList.add('hidden');
+                    soundOffIcon.classList.remove('hidden');
+                } else {
+                    // Unmute current ambient sound
+                    if (currentAmbientSound) {
+                        fadeInSound(currentAmbientSound);
+                    }
+                    
+                    // Show unmuted icon
+                    soundOffIcon.classList.add('hidden');
+                    soundOnIcon.classList.remove('hidden');
+                }
+            });
+            
             document.getElementById('left-arrow').addEventListener('click', function() {
-                currentRoomIndex = (currentRoomIndex - 1 + rooms.length) % rooms.length;
-                showRoom(currentRoomIndex);
+                const newIndex = (currentRoomIndex - 1 + rooms.length) % rooms.length;
+                showRoom(newIndex);
             });
             
             document.getElementById('right-arrow').addEventListener('click', function() {
-                currentRoomIndex = (currentRoomIndex + 1) % rooms.length;
-                showRoom(currentRoomIndex);
+                const newIndex = (currentRoomIndex + 1) % rooms.length;
+                showRoom(newIndex);
             });
-            
-            // Initialize the first room (but don't play sound until user interacts)
-            showRoom(currentRoomIndex);
             
             // Add keyboard navigation
             document.addEventListener('keydown', function(e) {
+                // Only work if we're in the main content
+                if (mainContent.classList.contains('opacity-0')) return;
+                
                 if (e.key === 'ArrowLeft') {
                     document.getElementById('left-arrow').click();
                 } else if (e.key === 'ArrowRight') {
                     document.getElementById('right-arrow').click();
+                } else if (e.key === 'Escape') {
+                    exitButton.click();
                 }
             });
-            
-            // Add a click handler to the body to enable audio after first interaction
-            document.body.addEventListener('click', function bodyClickHandler() {
-                // Try to play the current room's sound after user interaction
-                const currentRoomId = rooms[currentRoomIndex];
-                const sound = roomSounds[currentRoomId];
-                if (sound) {
-                    sound.play().catch(e => console.log("Audio still prevented: ", e));
-                }
-                
-                // Remove this handler after first click
-                document.body.removeEventListener('click', bodyClickHandler);
-            }, { once: true });
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94a2200200851f55',t:'MTc0ODk4NDQ3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94a2f86ad069d6ed',t:'MTc0ODk5MzM0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
 
 </body></html>
