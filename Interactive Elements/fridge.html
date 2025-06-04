@@ -1,4 +1,6 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interactive Fridge</title>
@@ -105,7 +107,7 @@
 <body>
   <h1>Interactive Fridge</h1>
   <div class="fridge-container">
-    <div class="fridge-body" id="fridgeBody"><div class="item">🥬</div><div class="item">🍅</div><div class="item">🥛</div><div class="item">🧀</div><div class="item">🥕</div><div class="item">🥚</div></div>
+    <div class="fridge-body" id="fridgeBody"></div>
     <div class="fridge-door" id="fridgeDoor" onclick="toggleDoor()">🚪 Open/Close</div>
   </div>
 
@@ -115,10 +117,10 @@
     <button class="clear-button" onclick="clearInventory()">Clear Inventory</button>
   </div>
 
-  <audio id="sound-open" src="https://cdn.pixabay.com/audio/2022/03/15/audio_b727bc93d8.mp3"></audio>
-  <audio id="sound-close" src="https://cdn.pixabay.com/audio/2022/03/15/audio_fec67e8702.mp3"></audio>
-  <audio id="sound-move" src="https://cdn.pixabay.com/audio/2023/01/31/audio_4ad6715b71.mp3"></audio>
-  <audio id="sound-clear" src="https://cdn.pixabay.com/audio/2022/03/15/audio_80fc83975b.mp3"></audio>
+  <audio id="sound-open" src="Sounds/fridgeOpen.mp3"></audio>
+  <audio id="sound-close" src="Sounds/fridgeClose.mp3"></audio>
+  <audio id="sound-move" src="Sounds/moveItem.mp3"></audio>
+  <audio id="sound-clear" src="Sounds/clearInventory.mp3"></audio>
 
   <script>
     const fridgeDoor = document.getElementById('fridgeDoor');
@@ -209,6 +211,5 @@
     renderFridge();
     renderInventory();
   </script>
-
-
-</body></html>
+</body>
+</html>

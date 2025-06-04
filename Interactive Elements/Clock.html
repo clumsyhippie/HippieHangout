@@ -1,0 +1,340 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Cute Wall Clock - NYC Time</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: transparent;
+            overflow: hidden;
+        }
+        
+        .clock-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            filter: drop-shadow(0 15px 15px rgba(0, 0, 0, 0.2));
+        }
+        
+        .hook {
+            position: absolute;
+            width: 40px;
+            height: 30px;
+            border: 5px solid #A0522D;
+            border-bottom: none;
+            border-radius: 20px 20px 0 0;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            background: linear-gradient(to bottom, #CD853F, #A0522D);
+        }
+        
+        .clock-frame {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #CD853F; /* Lighter wood */
+            box-shadow: 0 0 20px rgba(205, 133, 63, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+            border: 20px solid #CD853F;
+            box-sizing: border-box;
+        }
+        
+        .clock-inner-ring {
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            border-radius: 50%;
+            border: 10px solid #FF7F50; /* Coral orange */
+            box-sizing: border-box;
+            z-index: 2;
+        }
+        
+        .clock-face {
+            position: relative;
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            background: #FFF8DC; /* Cream color for face */
+            z-index: 2;
+            overflow: hidden;
+        }
+        
+        /* Cute pattern on clock face */
+        .clock-face::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(255, 127, 80, 0.1) 0%, rgba(255, 127, 80, 0.1) 10%, transparent 10.5%),
+                radial-gradient(circle at 75% 75%, rgba(255, 127, 80, 0.1) 0%, rgba(255, 127, 80, 0.1) 10%, transparent 10.5%),
+                radial-gradient(circle at 75% 25%, rgba(255, 127, 80, 0.1) 0%, rgba(255, 127, 80, 0.1) 10%, transparent 10.5%),
+                radial-gradient(circle at 25% 75%, rgba(255, 127, 80, 0.1) 0%, rgba(255, 127, 80, 0.1) 10%, transparent 10.5%);
+            background-size: 50% 50%;
+        }
+        
+        .hour-marks {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+        }
+        
+        .hour-mark {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #FF7F50; /* Coral orange */
+            border-radius: 50%;
+            transform-origin: center;
+            box-shadow: 0 0 5px rgba(255, 127, 80, 0.5);
+        }
+        
+        .clock-center {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: #FF7F50; /* Coral orange */
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 7;
+            box-shadow: 0 0 10px rgba(255, 127, 80, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Cute face in the center */
+        .face {
+            position: relative;
+            width: 40px;
+            height: 40px;
+        }
+        
+        .eye {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #8B4513;
+            border-radius: 50%;
+            top: 12px;
+        }
+        
+        .eye.left {
+            left: 8px;
+        }
+        
+        .eye.right {
+            right: 8px;
+        }
+        
+        .mouth {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            border-bottom: 3px solid #8B4513;
+            border-radius: 0 0 10px 10px;
+            bottom: 8px;
+            left: 10px;
+        }
+        
+        .hand {
+            position: absolute;
+            transform-origin: bottom center;
+            bottom: 50%;
+            left: 50%;
+            border-radius: 20px;
+            z-index: 6;
+        }
+        
+        .hour-hand {
+            width: 12px;
+            height: 80px;
+            background: #8B4513; /* Wood brown */
+            transform: translateX(-50%);
+            border-radius: 6px 6px 0 0;
+        }
+        
+        .minute-hand {
+            width: 8px;
+            height: 120px;
+            background: #A0522D; /* Medium wood */
+            transform: translateX(-50%);
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .second-hand {
+            width: 4px;
+            height: 140px;
+            background: #FF4500; /* Deep orange */
+            transform: translateX(-50%);
+            border-radius: 2px 2px 0 0;
+        }
+        
+        /* Numbers */
+        .number {
+            position: absolute;
+            font-family: 'Bubblegum Sans', cursive;
+            font-size: 32px;
+            color: #8B4513; /* Wood brown */
+            transform-origin: center;
+            z-index: 4;
+            text-shadow: 1px 1px 2px rgba(255, 127, 80, 0.5);
+        }
+        
+        /* Cute decorative elements */
+        .decoration {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #FF7F50;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(45deg);
+            z-index: 3;
+        }
+    </style>
+<style>
+            @keyframes bounce {
+                0%, 100% { transform: translate(-50%, -50%) scale(1); }
+                50% { transform: translate(-50%, -50%) scale(1.1); }
+            }
+        </style></head>
+<body>
+    <div class="clock-container">
+        <div class="hook"></div>
+        <div class="clock-frame">
+            <div class="clock-inner-ring"></div>
+            <div class="clock-face">
+                <div class="hour-marks" id="hour-marks"><div class="hour-mark" style="left: calc(50% - 7.5px); top: calc(50% - 157.5px);"></div><div class="hour-mark" style="left: calc(50% + 67.5px); top: calc(50% - 137.404px);"></div><div class="hour-mark" style="left: calc(50% + 122.404px); top: calc(50% - 82.5px);"></div><div class="hour-mark" style="left: calc(50% + 142.5px); top: calc(50% - 7.5px);"></div><div class="hour-mark" style="left: calc(50% + 122.404px); top: calc(50% + 67.5px);"></div><div class="hour-mark" style="left: calc(50% + 67.5px); top: calc(50% + 122.404px);"></div><div class="hour-mark" style="left: calc(50% - 7.5px); top: calc(50% + 142.5px);"></div><div class="hour-mark" style="left: calc(50% - 82.5px); top: calc(50% + 122.404px);"></div><div class="hour-mark" style="left: calc(50% - 137.404px); top: calc(50% + 67.5px);"></div><div class="hour-mark" style="left: calc(50% - 157.5px); top: calc(50% - 7.5px);"></div><div class="hour-mark" style="left: calc(50% - 137.404px); top: calc(50% - 82.5px);"></div><div class="hour-mark" style="left: calc(50% - 82.5px); top: calc(50% - 137.404px);"></div></div>
+                <div id="numbers"><div class="number" style="left: calc(50% + 60px); top: calc(50% - 103.923px); transform: translate(-50%, -50%); animation: 2s ease-in-out 0.2s infinite normal none running bounce;">1</div><div class="number" style="left: calc(50% + 103.923px); top: calc(50% - 60px); transform: translate(-50%, -50%); animation: 2s ease-in-out 0.4s infinite normal none running bounce;">2</div><div class="number" style="left: calc(50% + 120px); top: calc(50% + 0px); transform: translate(-50%, -50%); animation: 2s ease-in-out 0.6s infinite normal none running bounce;">3</div><div class="number" style="left: calc(50% + 103.923px); top: calc(50% + 60px); transform: translate(-50%, -50%); animation: 2s ease-in-out 0.8s infinite normal none running bounce;">4</div><div class="number" style="left: calc(50% + 60px); top: calc(50% + 103.923px); transform: translate(-50%, -50%); animation: 2s ease-in-out 1s infinite normal none running bounce;">5</div><div class="number" style="left: calc(50% + 7.34788e-15px); top: calc(50% + 120px); transform: translate(-50%, -50%); animation: 2s ease-in-out 1.2s infinite normal none running bounce;">6</div><div class="number" style="left: calc(50% - 60px); top: calc(50% + 103.923px); transform: translate(-50%, -50%); animation: 2s ease-in-out 1.4s infinite normal none running bounce;">7</div><div class="number" style="left: calc(50% - 103.923px); top: calc(50% + 60px); transform: translate(-50%, -50%); animation: 2s ease-in-out 1.6s infinite normal none running bounce;">8</div><div class="number" style="left: calc(50% - 120px); top: calc(50% + 1.46958e-14px); transform: translate(-50%, -50%); animation: 2s ease-in-out 1.8s infinite normal none running bounce;">9</div><div class="number" style="left: calc(50% - 103.923px); top: calc(50% - 60px); transform: translate(-50%, -50%); animation: 2s ease-in-out 2s infinite normal none running bounce;">10</div><div class="number" style="left: calc(50% - 60px); top: calc(50% - 103.923px); transform: translate(-50%, -50%); animation: 2s ease-in-out 2.2s infinite normal none running bounce;">11</div><div class="number" style="left: calc(50% - 2.20436e-14px); top: calc(50% - 120px); transform: translate(-50%, -50%); animation: 2s ease-in-out 2.4s infinite normal none running bounce;">12</div></div>
+                <div class="hand hour-hand" id="hour-hand" style="transform: translateX(-50%) rotate(141.5deg);"></div>
+                <div class="hand minute-hand" id="minute-hand" style="transform: translateX(-50%) rotate(260.9deg);"></div>
+                <div class="hand second-hand" id="second-hand" style="transform: translateX(-50%) rotate(174deg);"></div>
+                <div class="clock-center">
+                    <div class="face">
+                        <div class="eye left" style="height: 8px;"></div>
+                        <div class="eye right" style="height: 8px;"></div>
+                        <div class="mouth"></div>
+                    </div>
+                </div>
+                
+                <!-- Cute decorative elements -->
+                <div class="decoration" style="top: 20%; left: 20%; transform: rotate(15deg);"></div>
+                <div class="decoration" style="top: 20%; right: 20%; transform: rotate(75deg);"></div>
+                <div class="decoration" style="bottom: 20%; left: 20%; transform: rotate(-45deg);"></div>
+                <div class="decoration" style="bottom: 20%; right: 20%; transform: rotate(-105deg);"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create hour marks
+        const hourMarksContainer = document.getElementById('hour-marks');
+        
+        for (let i = 0; i < 12; i++) {
+            const mark = document.createElement('div');
+            mark.className = 'hour-mark';
+            const angle = (i * 30) * (Math.PI / 180); // 30 degrees per hour
+            const radius = 150; // Distance from center
+            
+            // Calculate position
+            const x = radius * Math.sin(angle);
+            const y = -radius * Math.cos(angle);
+            
+            mark.style.left = `calc(50% + ${x}px - 7.5px)`;
+            mark.style.top = `calc(50% + ${y}px - 7.5px)`;
+            
+            hourMarksContainer.appendChild(mark);
+        }
+        
+        // Create numbers
+        const numbersContainer = document.getElementById('numbers');
+        for (let i = 1; i <= 12; i++) {
+            const number = document.createElement('div');
+            number.className = 'number';
+            number.textContent = i;
+            
+            const angle = ((i * 30) - 90) * (Math.PI / 180); // 30 degrees per hour, -90 to start at 12
+            const radius = 120; // Distance from center
+            
+            // Calculate position
+            const x = radius * Math.cos(angle);
+            const y = radius * Math.sin(angle);
+            
+            number.style.left = `calc(50% + ${x}px)`;
+            number.style.top = `calc(50% + ${y}px)`;
+            number.style.transform = 'translate(-50%, -50%)';
+            
+            // Add a little bounce animation to each number
+            number.style.animation = `bounce 2s ease-in-out ${i * 0.2}s infinite`;
+            
+            numbersContainer.appendChild(number);
+        }
+        
+        // Add keyframes for the bounce animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes bounce {
+                0%, 100% { transform: translate(-50%, -50%) scale(1); }
+                50% { transform: translate(-50%, -50%) scale(1.1); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        function updateClock() {
+            // Create a date object with NYC timezone
+            const options = { timeZone: 'America/New_York' };
+            const nyTime = new Date().toLocaleString('en-US', options);
+            const nyDate = new Date(nyTime);
+            
+            const hours = nyDate.getHours();
+            const minutes = nyDate.getMinutes();
+            const seconds = nyDate.getSeconds();
+            const milliseconds = nyDate.getMilliseconds();
+            
+            // Calculate rotation angles
+            const hourAngle = (hours % 12) * 30 + minutes * 0.5; // 30 degrees per hour + adjustment for minutes
+            const minuteAngle = minutes * 6 + seconds * 0.1; // 6 degrees per minute + adjustment for seconds
+            const secondAngle = seconds * 6 + milliseconds * 0.006; // 6 degrees per second + smooth movement
+            
+            // Apply rotations
+            document.getElementById('hour-hand').style.transform = `translateX(-50%) rotate(${hourAngle}deg)`;
+            document.getElementById('minute-hand').style.transform = `translateX(-50%) rotate(${minuteAngle}deg)`;
+            document.getElementById('second-hand').style.transform = `translateX(-50%) rotate(${secondAngle}deg)`;
+            
+            // Make the face blink occasionally
+            if (seconds % 10 === 0 && milliseconds < 200) {
+                document.querySelectorAll('.eye').forEach(eye => {
+                    eye.style.height = '1px';
+                });
+            } else {
+                document.querySelectorAll('.eye').forEach(eye => {
+                    eye.style.height = '8px';
+                });
+            }
+            
+            // Call this function again on the next frame
+            requestAnimationFrame(updateClock);
+        }
+        
+        // Initial call
+        updateClock();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94a20551c3e33879',t:'MTc0ODk4MzM4NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
+
+</body></html>
