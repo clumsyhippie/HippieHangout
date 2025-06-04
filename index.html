@@ -3,32 +3,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hippie Hangout</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Uncial Antiqua Font -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&amp;family=Poppins:wght@300;400;600&amp;display=swap">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Poppins:wght@300;400;600&display=swap');
-        
         body {
             font-family: 'Poppins', sans-serif;
             overflow: hidden;
             margin: 0;
             padding: 0;
+            background-color: #000;
         }
         
         .sign-text {
-            font-family: 'Uncial Antiqua', cursive;
-            color: #FFE0B2;
-            position: relative;
-            display: inline-block;
-            width: 100%;
+            font-family: 'Pacifico', cursive;
             text-align: center;
             letter-spacing: 1px;
-            /* Engraved/inset text effect */
-            text-shadow: 
-                0px 1px 1px rgba(0, 0, 0, 0.8),
-                0px -1px 0px rgba(255, 235, 205, 0.2);
+            color: #FFEB3B; /* Bright yellow for better readability */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Text shadow for better contrast */
         }
         
         .nav-arrow {
@@ -51,10 +42,11 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-        }
-        
-        .room-overlay {
-            background: rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
         
         .mute-button, .exit-button {
@@ -69,53 +61,171 @@
             background-color: rgba(0, 0, 0, 0.7);
             box-shadow: 0 4px 20px rgba(255, 165, 0, 0.4);
             border-color: rgba(255, 165, 0, 0.8);
+            transform: scale(1.05);
         }
         
-        .door-container {
-            transition: opacity 1.5s ease-in-out;
+        /* Purple Doorbell */
+        .doorbell {
+            position: absolute;
+            right: 120px; /* Moved much more to the left */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px; /* Larger */
+            height: 100px; /* Larger */
+            z-index: 10;
+            cursor: pointer;
+            transition: all 0.1s; /* Faster transition */
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
         
-        .sign-container {
-            position: relative;
-            display: inline-block;
+        .doorbell:hover {
+            transform: translateY(-50%) scale(1.1);
+            filter: drop-shadow(0 6px 8px rgba(0,0,0,0.4));
         }
         
-        .sign-overlay {
+        .doorbell-outer {
+            position: absolute;
+            width: 50px;
+            height: 100px;
+            background: #9370DB; /* Light purple for outer */
+            border-radius: 10px;
+            box-shadow: 
+                0 2px 4px rgba(0,0,0,0.3),
+                inset 0 1px 2px rgba(255,255,255,0.4);
+        }
+        
+        .doorbell-inner {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 80%;
-            text-align: center;
+            width: 35px;
+            height: 80px;
+            background: #8A2BE2; /* Medium purple for inner */
+            border-radius: 8px;
+            box-shadow: 
+                inset 0 -2px 3px rgba(0,0,0,0.2),
+                0 1px 2px rgba(255,255,255,0.3);
         }
         
-        /* Knock animation */
+        .doorbell-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 25px;
+            height: 60px;
+            background: #4B0082; /* Dark purple for button */
+            border-radius: 6px;
+            box-shadow: 
+                inset 0 -1px 2px rgba(0,0,0,0.1),
+                0 1px 1px rgba(0,0,0,0.2);
+        }
+        
+        .doorbell.pressed .doorbell-button {
+            transform: translate(-50%, -50%) scale(0.95);
+            box-shadow: 
+                inset 0 1px 2px rgba(0,0,0,0.3),
+                0 0 0 rgba(0,0,0,0);
+        }
+        
+        /* Door container with exact dimensions - doubled size */
+        .door-container {
+            position: absolute;
+            width: 1232px; /* Doubled from 616px */
+            height: 1996px; /* Doubled from 998px */
+            left: 52%; /* Positioned to the right */
+            top: 52%; /* Slightly lowered */
+            transform: translate(-50%, -50%);
+            transition: opacity 1.5s ease-in-out;
+        }
+        
+        /* Very fast knock animation */
         @keyframes knock {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+            0%, 100% { transform: translateY(-50%); }
+            50% { transform: translateY(-50%) scale(0.95); }
         }
         
         .knocking {
-            animation: knock 0.2s ease-in-out 3;
+            animation: knock 0.05s ease-in-out 1; /* Much faster animation, only once */
+        }
+        
+        /* Sign container - improved visibility */
+        .sign-container {
+            position: relative;
+            display: inline-block;
+            z-index: 100;
+            margin-top: 20px; /* Added margin to move sign down */
+        }
+        
+        /* Hippie-themed main sign */
+        .hippie-sign {
+            width: 320px;
+            height: 160px;
+            position: relative;
+            margin: 0 auto;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* Room sign animation */
+        .fade-in-out {
+            opacity: 0;
+            animation: fadeInOut 7s forwards;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        .sign-overlay {
+            position: absolute;
+            top: 50%; /* Centered vertically */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            text-align: center;
+            z-index: 101;
+            /* No separate animation here - will inherit from parent */
+        }
+        
+        /* Ensure images display properly */
+        .door-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            display: block;
+            background-color: transparent;
+        }
+        
+        /* Fallback door SVG */
+        .door-fallback {
+            width: 100%;
+            height: 100%;
+            display: none; /* Hidden by default, shown if image fails */
         }
     </style>
-<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.bottom-10{bottom:2.5rem}.left-0{left:0px}.left-1\/2{left:50%}.left-4{left:1rem}.left-6{left:1.5rem}.right-0{right:0px}.right-4{right:1rem}.right-6{right:1.5rem}.top-0{top:0px}.top-1\/2{top:50%}.top-1\/4{top:25%}.top-4{top:1rem}.top-8{top:2rem}.z-10{z-index:10}.z-40{z-index:40}.z-50{z-index:50}.mt-4{margin-top:1rem}.flex{display:flex}.hidden{display:none}.h-screen{height:100vh}.h-auto{height:auto}.max-h-full{max-height:100%}.w-screen{width:100vw}.w-auto{width:auto}.max-w-full{max-width:100%}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.-translate-y-1\/2{--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-center{justify-content:center}.overflow-hidden{overflow:hidden}.rounded-full{border-radius:9999px}.bg-black{--tw-bg-opacity:1;background-color:rgb(0 0 0 / var(--tw-bg-opacity, 1))}.bg-opacity-50{--tw-bg-opacity:0.5}.p-3{padding:0.75rem}.p-4{padding:1rem}.px-4{padding-left:1rem;padding-right:1rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-0{opacity:0}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-1000{transition-duration:1000ms}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}@media (min-width: 768px){.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}</style></head>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.left-0{left:0px}.left-4{left:1rem}.left-6{left:1.5rem}.right-0{right:0px}.right-4{right:1rem}.right-6{right:1.5rem}.top-0{top:0px}.top-1\/2{top:50%}.top-4{top:1rem}.top-40{top:10rem}.z-40{z-index:40}.z-50{z-index:50}.flex{display:flex}.hidden{display:none}.h-screen{height:100vh}.w-screen{width:100vw}.-translate-y-1\/2{--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-center{justify-content:center}.overflow-hidden{overflow:hidden}.rounded-full{border-radius:9999px}.p-3{padding:0.75rem}.p-4{padding:1rem}.pt-2{padding-top:0.5rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-0{opacity:0}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-1000{transition-duration:1000ms}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}@media (min-width: 768px){.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}</style></head>
 <body>
     <div class="relative h-screen w-screen overflow-hidden">
         <!-- Audio Elements -->
-        <!-- Door interaction sounds -->
-        <audio id="knock-sound" src="sounds/knock.mp3" preload="auto"></audio>
-        <audio id="door-open-sound" src="sounds/dooropen.mp3" preload="auto"></audio>
+        <audio id="doorbell-sound" src="Sounds/doorbell.mp3" preload="auto"></audio>
+        <audio id="door-open-sound" src="Sounds/dooropen.mp3" preload="auto"></audio>
         
-        <!-- Entry sounds -->
         <audio id="living-sound" src="Sounds/living.mp4" preload="auto"></audio>
         <audio id="kitchen-sound" src="Sounds/kitchen.mp4" preload="auto"></audio>
         <audio id="porch-sound" src="Sounds/porch.mp4" preload="auto"></audio>
         <audio id="garden-sound" src="Sounds/garden.mp4" preload="auto"></audio>
         
-        <!-- Ambient sounds -->
-        <audio id="amb-door" src="Sounds/ambDoor.mp3" preload="auto" loop=""></audio>
+        <audio id="amb-front" src="Sounds/ambFront.mp3" preload="auto" loop=""></audio>
         <audio id="amb-living" src="Sounds/ambLiving.mp3" preload="auto" loop=""></audio>
         <audio id="amb-kitchen" src="Sounds/ambKitchen.mp3" preload="auto" loop=""></audio>
         <audio id="amb-porch" src="Sounds/ambPorch.mp3" preload="auto" loop=""></audio>
@@ -136,37 +246,81 @@
             </button>
         </div>
         
+        <!-- Title Sign (visible on all pages) - Hippie themed -->
+        <div class="absolute top-0 left-0 right-0 z-40 text-center flex flex-col items-center pt-2">
+            <div id="main-sign" class="sign-container">
+                <!-- Hippie-themed SVG Sign -->
+                <div class="hippie-sign">
+                    <svg width="320" height="160" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Background with rounded corners -->
+                        <rect x="10" y="20" width="300" height="120" rx="20" ry="20" fill="#8B4513" stroke="#5D2906" stroke-width="5"></rect>
+                        
+                        <!-- Tie-dye background pattern -->
+                        <defs>
+                            <radialGradient id="tiedye" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                                <stop offset="0%" stop-color="#FF5E5E"></stop>
+                                <stop offset="16%" stop-color="#FF9D5E"></stop>
+                                <stop offset="33%" stop-color="#FFDE5E"></stop>
+                                <stop offset="50%" stop-color="#5EFF5E"></stop>
+                                <stop offset="66%" stop-color="#5E9DFF"></stop>
+                                <stop offset="83%" stop-color="#D55EFF"></stop>
+                                <stop offset="100%" stop-color="#FF5E5E"></stop>
+                            </radialGradient>
+                        </defs>
+                        
+                        <!-- Tie-dye background -->
+                        <rect x="20" y="30" width="280" height="100" rx="15" ry="15" fill="url(#tiedye)" stroke="#6B3E26" stroke-width="2"></rect>
+                        
+                        <!-- Swirly patterns -->
+                        <path d="M40,50 C60,30 80,70 100,50 C120,30 140,70 160,50 C180,30 200,70 220,50 C240,30 260,70 280,50" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.3"></path>
+                        <path d="M40,80 C60,60 80,100 100,80 C120,60 140,100 160,80 C180,60 200,100 220,80 C240,60 260,100 280,80" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.3"></path>
+                        <path d="M40,110 C60,90 80,130 100,110 C120,90 140,130 160,110 C180,90 200,130 220,110 C240,90 260,130 280,110" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.3"></path>
+                    </svg>
+                </div>
+                <div class="sign-overlay">
+                    <h1 class="sign-text text-3xl md:text-4xl flex flex-col">
+                        <span>Hippie</span>
+                        <span>Hangout</span>
+                    </h1>
+                </div>
+            </div>
+        </div>
+        
         <!-- Front Door Page -->
-        <div id="front-door" class="room absolute inset-0" style="background-image: url('images/front.gif');">
-            <div class="absolute inset-0 flex items-center justify-center">
-                <!-- Door Container -->
-                <div id="door-container" class="door-container relative cursor-pointer" style="opacity: 1;">
-                    <!-- Static Door Image (shown initially) -->
-                    <img id="door-static" src="images/door.gif" alt="Door" class="w-auto h-auto max-w-full max-h-full" style="opacity: 1;">
-                    
-                    <!-- Door GIF (shown when clicked) -->
-                    <img id="door-gif" src="images/door.gif" alt="Door Opening" class="absolute top-0 left-0 w-auto h-auto max-w-full max-h-full opacity-0" style="opacity: 0;">
-                    
-                    <!-- Wooden Sign Image -->
-                    <div class="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-                        <div class="sign-container">
-                            <img src="images/sign.png" alt="Wooden Sign" class="w-auto h-auto" style="min-width: 220px;">
-                            <div class="sign-overlay">
-                                <h1 class="sign-text text-xl">Hippie Hangout</h1>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Click Instruction -->
-                    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-center">
-                        <p class="text-white text-lg bg-black bg-opacity-50 px-4 py-2 rounded-full">Click to Enter</p>
-                    </div>
+        <div id="front-door" class="room" style="background-image: url('images/front.gif');">
+            <!-- Door Container - Doubled size -->
+            <div id="door-container" class="door-container">
+                <!-- Static Door Image -->
+                <img id="door-static" src="images/door.png" alt="Door" class="door-image">
+                
+                <!-- Fallback SVG if image fails to load -->
+                <svg id="door-static-fallback" class="door-fallback" viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="50" y="20" width="200" height="460" rx="5" ry="5" fill="#8B4513" stroke="#5D2906" stroke-width="5"></rect>
+                    <rect x="70" y="40" width="160" height="420" rx="3" ry="3" fill="#A0522D" stroke="#6B3E26" stroke-width="2"></rect>
+                    <circle cx="220" cy="250" r="10" fill="#D4AF37" stroke="#5D2906" stroke-width="1"></circle>
+                </svg>
+                
+                <!-- Door GIF (hidden initially) -->
+                <img id="door-gif" src="images/door.gif" alt="Door Opening" class="door-image hidden">
+                
+                <!-- Fallback SVG if GIF fails to load -->
+                <svg id="door-gif-fallback" class="door-fallback hidden" viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="50" y="20" width="200" height="460" rx="5" ry="5" fill="#8B4513" stroke="#5D2906" stroke-width="5"></rect>
+                    <rect x="70" y="40" width="160" height="420" rx="3" ry="3" fill="#A0522D" stroke="#6B3E26" stroke-width="2" transform="rotate(30, 150, 250)"></rect>
+                    <circle cx="220" cy="250" r="10" fill="#D4AF37" stroke="#5D2906" stroke-width="1"></circle>
+                </svg>
+                
+                <!-- Purple Doorbell -->
+                <div id="doorbell" class="doorbell">
+                    <div class="doorbell-outer"></div>
+                    <div class="doorbell-inner"></div>
+                    <div class="doorbell-button"></div>
                 </div>
             </div>
         </div>
         
         <!-- Main Content (initially hidden) -->
-        <div id="main-content" class="absolute inset-0 transition-opacity duration-1000 opacity-0 pointer-events-none">
+        <div id="main-content" class="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-1000">
             <!-- Navigation Arrows -->
             <div class="absolute left-6 top-1/2 transform -translate-y-1/2 z-50">
                 <button id="left-arrow" class="nav-arrow text-white p-4 rounded-full focus:outline-none flex items-center justify-center">
@@ -180,16 +334,24 @@
                 </button>
             </div>
             
-            <!-- Title that stays on all pages -->
-            <div class="absolute top-8 left-0 right-0 z-40 text-center flex flex-col items-center">
-                <div class="sign-container">
-                    <img src="images/sign.png" alt="Wooden Sign" class="w-auto h-auto" style="min-width: 320px;">
-                    <div class="sign-overlay">
-                        <h1 class="sign-text text-3xl md:text-4xl">Hippie Hangout</h1>
+            <!-- Room Subtitle Sign - Hippie themed -->
+            <div id="room-sign" class="absolute top-40 left-0 right-0 z-40 text-center flex flex-col items-center opacity-0">
+                <div class="sign-container" style="transform: scale(0.7);">
+                    <!-- Hippie-themed SVG Sign -->
+                    <div class="hippie-sign">
+                        <svg width="240" height="120" viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Background with rounded corners -->
+                            <rect x="10" y="15" width="220" height="90" rx="15" ry="15" fill="#8B4513" stroke="#5D2906" stroke-width="4"></rect>
+                            
+                            <!-- Tie-dye background -->
+                            <rect x="18" y="23" width="204" height="74" rx="10" ry="10" fill="url(#tiedye)" stroke="#6B3E26" stroke-width="2"></rect>
+                            
+                            <!-- Swirly patterns -->
+                            <path d="M30,40 C45,30 60,50 75,40 C90,30 105,50 120,40 C135,30 150,50 165,40 C180,30 195,50 210,40" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"></path>
+                            <path d="M30,60 C45,50 60,70 75,60 C90,50 105,70 120,60 C135,50 150,70 165,60 C180,50 195,70 210,60" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"></path>
+                            <path d="M30,80 C45,70 60,90 75,80 C90,70 105,90 120,80 C135,70 150,90 165,80 C180,70 195,90 210,80" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"></path>
+                        </svg>
                     </div>
-                </div>
-                <div class="sign-container mt-4" style="transform: scale(0.8);">
-                    <img src="images/sign.png" alt="Wooden Sign" class="w-auto h-auto" style="min-width: 200px;">
                     <div class="sign-overlay">
                         <h2 id="room-subtitle" class="sign-text text-lg md:text-xl">Living Room</h2>
                     </div>
@@ -197,23 +359,23 @@
             </div>
             
             <!-- Living Room -->
-            <div id="living-room" class="room absolute inset-0" style="background-image: url('images/living.gif');">
-                <div class="room-overlay absolute inset-0"></div>
+            <div id="living-room" class="room" style="background-image: url('images/living.gif');">
+                <div class="absolute inset-0"></div>
             </div>
             
             <!-- Kitchen -->
-            <div id="kitchen" class="room absolute inset-0 opacity-0 pointer-events-none" style="background-image: url('images/kitchen.gif');">
-                <div class="room-overlay absolute inset-0"></div>
+            <div id="kitchen" class="room opacity-0 pointer-events-none" style="background-image: url('images/kitchen.gif');">
+                <div class="absolute inset-0"></div>
             </div>
             
             <!-- Porch -->
-            <div id="porch" class="room absolute inset-0 opacity-0 pointer-events-none" style="background-image: url('porch.gif');">
-                <div class="room-overlay absolute inset-0"></div>
+            <div id="porch" class="room opacity-0 pointer-events-none" style="background-image: url('images/porch.gif');">
+                <div class="absolute inset-0"></div>
             </div>
             
             <!-- Garden -->
-            <div id="garden" class="room absolute inset-0 opacity-0 pointer-events-none" style="background-image: url('garden.gif');">
-                <div class="room-overlay absolute inset-0"></div>
+            <div id="garden" class="room opacity-0 pointer-events-none" style="background-image: url('images/garden.gif');">
+                <div class="absolute inset-0"></div>
             </div>
         </div>
     </div>
@@ -225,8 +387,11 @@
             const roomNames = ['Living Room', 'Kitchen', 'Porch', 'Garden'];
             
             // Door interaction sounds
-            const knockSound = document.getElementById('knock-sound');
+            const doorbellSound = document.getElementById('doorbell-sound');
             const doorOpenSound = document.getElementById('door-open-sound');
+            
+            // Set door open sound volume to 50%
+            doorOpenSound.volume = 0.5;
             
             // Entry sounds
             const roomSounds = {
@@ -238,7 +403,7 @@
             
             // Ambient sounds
             const ambientSounds = {
-                'door': document.getElementById('amb-door'),
+                'front': document.getElementById('amb-front'),
                 'living-room': document.getElementById('amb-living'),
                 'kitchen': document.getElementById('amb-kitchen'),
                 'porch': document.getElementById('amb-porch'),
@@ -246,108 +411,162 @@
             };
             
             let currentRoomIndex = 0;
-            let currentAmbientSound = ambientSounds['door'];
+            let currentAmbientSound = ambientSounds['front'];
             let isMuted = false;
             let doorClicked = false;
             
-            // Start door ambient sound
-            try {
-                ambientSounds['door'].volume = 0.7;
-                ambientSounds['door'].play().catch(e => {
-                    console.log("Door ambient audio playback prevented: ", e);
-                });
-            } catch (e) {
-                console.log("Error playing door ambient sound:", e);
+            // Force autoplay for ambient sounds
+            function forcePlayAudio() {
+                // Create a context to unlock audio
+                const context = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Start front door ambient sound
+                ambientSounds['front'].volume = 0.7;
+                
+                // Try to play immediately
+                const playPromise = ambientSounds['front'].play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log("Ambient sound playing successfully");
+                    }).catch(e => {
+                        console.log("Autoplay prevented, will try on user interaction:", e);
+                        
+                        // Create a silent buffer to unlock audio on iOS
+                        const buffer = context.createBuffer(1, 1, 22050);
+                        const source = context.createBufferSource();
+                        source.buffer = buffer;
+                        source.connect(context.destination);
+                        source.start(0);
+                        
+                        // Try again on first user interaction
+                        const unlockAudio = () => {
+                            ambientSounds['front'].play().catch(e => console.log("Still can't play audio:", e));
+                            document.body.removeEventListener('touchstart', unlockAudio);
+                            document.body.removeEventListener('touchend', unlockAudio);
+                            document.body.removeEventListener('click', unlockAudio);
+                            document.body.removeEventListener('keydown', unlockAudio);
+                        };
+                        
+                        document.body.addEventListener('touchstart', unlockAudio, false);
+                        document.body.addEventListener('touchend', unlockAudio, false);
+                        document.body.addEventListener('click', unlockAudio, false);
+                        document.body.addEventListener('keydown', unlockAudio, false);
+                    });
+                }
             }
+            
+            // Call immediately to try autoplay
+            forcePlayAudio();
             
             // Door interaction
             const doorContainer = document.getElementById('door-container');
             const doorStatic = document.getElementById('door-static');
+            const doorStaticFallback = document.getElementById('door-static-fallback');
             const doorGif = document.getElementById('door-gif');
+            const doorGifFallback = document.getElementById('door-gif-fallback');
+            const doorbell = document.getElementById('doorbell');
             const frontDoorPage = document.getElementById('front-door');
             const mainContent = document.getElementById('main-content');
             const exitButton = document.getElementById('exit-button');
+            const roomSign = document.getElementById('room-sign');
             
-            doorContainer.addEventListener('click', function() {
+            // Make sure images are loaded
+            const preloadImages = () => {
+                // Handle door static image loading
+                doorStatic.onerror = () => {
+                    console.error('Failed to load door static image, showing fallback');
+                    doorStatic.style.display = 'none';
+                    doorStaticFallback.style.display = 'block';
+                };
+                
+                // Handle door gif loading
+                doorGif.onerror = () => {
+                    console.error('Failed to load door gif, showing fallback');
+                    doorGif.style.display = 'none';
+                    doorGifFallback.style.display = 'block';
+                };
+            };
+            
+            // Call preload function
+            preloadImages();
+            
+            // Doorbell button functionality - With longer delay
+            doorbell.addEventListener('click', function() {
                 // Prevent multiple clicks
                 if (doorClicked) return;
                 doorClicked = true;
                 
-                // First play knock sound and animate door slightly
-                try {
-                    knockSound.play().catch(e => {
-                        console.log("Knock sound playback prevented: ", e);
-                    });
-                } catch (e) {
-                    console.log("Error playing knock sound:", e);
-                }
+                // Add pressed class to doorbell and play sound immediately
+                doorbell.classList.add('pressed');
+                doorbellSound.play().catch(e => {
+                    console.log("Doorbell sound playback prevented: ", e);
+                });
                 
-                // Add knocking animation to door
-                doorStatic.classList.add('knocking');
+                // Add knocking animation to doorbell
+                doorbell.classList.add('knocking');
                 
-                // After knock animation, play door open sound and show gif
+                // After doorbell animation, wait longer before showing door opening
                 setTimeout(() => {
-                    // Remove knocking animation
-                    doorStatic.classList.remove('knocking');
+                    // Remove animations
+                    doorbell.classList.remove('knocking');
+                    doorbell.classList.remove('pressed');
                     
-                    // Play door open sound
-                    try {
+                    // Longer delay (1 second) before playing door open sound and showing gif
+                    setTimeout(() => {
+                        // Play door open sound (volume already set to 50%)
                         doorOpenSound.play().catch(e => {
                             console.log("Door open sound playback prevented: ", e);
                         });
-                    } catch (e) {
-                        console.log("Error playing door open sound:", e);
-                    }
-                    
-                    // Show the door GIF animation
-                    doorStatic.style.opacity = "0";
-                    doorGif.style.opacity = "1";
-                    
-                    // Fade out door ambient
-                    fadeOutSound(ambientSounds['door']);
-                    
-                    // After door animation, show main content
-                    setTimeout(() => {
-                        doorContainer.style.opacity = "0";
                         
+                        // Hide static door image and show animated door gif
+                        doorStatic.classList.add('hidden');
+                        doorStaticFallback.classList.add('hidden');
+                        doorGif.classList.remove('hidden');
+                        doorGifFallback.classList.remove('hidden');
+                        
+                        // Fade out front door ambient
+                        fadeOutSound(ambientSounds['front']);
+                        
+                        // After door animation, show main content
                         setTimeout(() => {
-                            frontDoorPage.classList.add('opacity-0', 'pointer-events-none');
-                            mainContent.classList.remove('opacity-0', 'pointer-events-none');
-                            exitButton.classList.remove('opacity-0', 'pointer-events-none');
+                            doorContainer.style.opacity = "0";
                             
-                            // Start living room ambient
-                            currentAmbientSound = ambientSounds['living-room'];
-                            if (!isMuted) {
-                                fadeInSound(ambientSounds['living-room']);
-                            }
-                            
-                            // Play living room entry sound
-                            try {
+                            setTimeout(() => {
+                                frontDoorPage.classList.add('opacity-0', 'pointer-events-none');
+                                mainContent.classList.remove('opacity-0', 'pointer-events-none');
+                                exitButton.classList.remove('opacity-0', 'pointer-events-none');
+                                
+                                // Show room sign with fade-in-out animation
+                                roomSign.classList.remove('opacity-0');
+                                roomSign.classList.add('fade-in-out');
+                                
+                                // Start living room ambient
+                                currentAmbientSound = ambientSounds['living-room'];
+                                if (!isMuted) {
+                                    fadeInSound(ambientSounds['living-room']);
+                                }
+                                
+                                // Play living room entry sound
                                 roomSounds['living-room'].play().catch(e => {
                                     console.log("Living room sound playback prevented: ", e);
                                 });
-                            } catch (e) {
-                                console.log("Error playing living room sound:", e);
-                            }
+                                
+                                // Reset door clicked state for when user exits
+                                doorClicked = false;
+                            }, 500);
                             
-                            // Reset door clicked state for when user exits
-                            doorClicked = false;
-                        }, 500);
-                        
-                    }, 1500);
-                }, 900); // Wait for knock animation to complete
+                        }, 1500);
+                    }, 1000); // Added 1 second delay before door opens
+                }, 100);
             });
             
             // Exit button functionality
             exitButton.addEventListener('click', function() {
-                // Play door open sound
-                try {
-                    doorOpenSound.play().catch(e => {
-                        console.log("Door open sound playback prevented: ", e);
-                    });
-                } catch (e) {
-                    console.log("Error playing door open sound:", e);
-                }
+                // Play door open sound (volume already set to 50%)
+                doorOpenSound.play().catch(e => {
+                    console.log("Door open sound playback prevented: ", e);
+                });
                 
                 // Fade out current ambient sound
                 if (currentAmbientSound) {
@@ -357,20 +576,24 @@
                 // Hide main content and show front door
                 mainContent.classList.add('opacity-0', 'pointer-events-none');
                 exitButton.classList.add('opacity-0', 'pointer-events-none');
+                roomSign.classList.add('opacity-0');
+                roomSign.classList.remove('fade-in-out');
                 
                 setTimeout(() => {
-                    // Reset door images
-                    doorStatic.style.opacity = "1";
-                    doorGif.style.opacity = "0";
+                    // Reset door - show static image again
+                    doorStatic.classList.remove('hidden');
+                    doorStaticFallback.classList.remove('hidden');
+                    doorGif.classList.add('hidden');
+                    doorGifFallback.classList.add('hidden');
                     doorContainer.style.opacity = "1";
                     
                     // Show front door page
                     frontDoorPage.classList.remove('opacity-0', 'pointer-events-none');
                     
-                    // Start door ambient
-                    currentAmbientSound = ambientSounds['door'];
+                    // Start front door ambient
+                    currentAmbientSound = ambientSounds['front'];
                     if (!isMuted) {
-                        fadeInSound(ambientSounds['door']);
+                        fadeInSound(ambientSounds['front']);
                     }
                 }, 500);
             });
@@ -399,16 +622,9 @@
                         room.classList.remove('opacity-0', 'pointer-events-none');
                         
                         // Play the entry sound for this room
-                        try {
-                            const entrySound = roomSounds[roomId];
-                            if (entrySound) {
-                                entrySound.play().catch(e => {
-                                    console.log("Entry audio playback prevented: ", e);
-                                });
-                            }
-                        } catch (e) {
-                            console.log("Error playing entry sound:", e);
-                        }
+                        roomSounds[roomId].play().catch(e => {
+                            console.log("Entry audio playback prevented: ", e);
+                        });
                         
                         // Start the ambient sound for this room
                         const ambSound = ambientSounds[roomId];
@@ -423,9 +639,14 @@
                     }
                 });
                 
-                // Update room subtitle
+                // Update room subtitle and trigger fade-in-out animation
                 const roomSubtitle = document.getElementById('room-subtitle');
                 roomSubtitle.textContent = roomNames[index];
+                
+                // Reset the animation by removing and re-adding the class
+                roomSign.classList.remove('fade-in-out');
+                void roomSign.offsetWidth; // Force reflow
+                roomSign.classList.add('fade-in-out');
                 
                 // Update current room index
                 currentRoomIndex = index;
@@ -524,6 +745,6 @@
             });
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94a2f86ad069d6ed',t:'MTc0ODk5MzM0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94a3a2f470e8a45b',t:'MTc0OTAwMDMyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
 
 </body></html>
