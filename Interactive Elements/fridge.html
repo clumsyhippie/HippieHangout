@@ -1,0 +1,214 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Fridge</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .fridge-container {
+      position: relative;
+      width: 300px;
+      height: 500px;
+      margin: 0 auto;
+      perspective: 1000px;
+    }
+
+    .fridge-body {
+      width: 100%;
+      height: 100%;
+      background: #e0f7fa;
+      border: 3px solid #00796b;
+      border-radius: 10px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 10px;
+      padding: 10px;
+      box-sizing: border-box;
+      z-index: 1;
+      position: absolute;
+    }
+
+    .fridge-door {
+      width: 100%;
+      height: 100%;
+      background: #b2ebf2;
+      border: 3px solid #00796b;
+      border-radius: 10px;
+      position: absolute;
+      transform-origin: left;
+      transform: rotateY(0deg);
+      transition: transform 1s ease;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .door-open {
+      transform: rotateY(-120deg);
+    }
+
+    .item {
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .inventory {
+      margin-top: 2rem;
+      background: #ffffff;
+      border: 2px solid #00796b;
+      border-radius: 8px;
+      padding: 1rem;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .inventory h2 {
+      margin-top: 0;
+    }
+
+    .inventory-list li {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.5rem 0;
+    }
+
+    .remove-btn {
+      color: red;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .clear-button {
+      margin-top: 10px;
+      background: #d32f2f;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Interactive Fridge</h1>
+  <div class="fridge-container">
+    <div class="fridge-body" id="fridgeBody"><div class="item">🥬</div><div class="item">🍅</div><div class="item">🥛</div><div class="item">🧀</div><div class="item">🥕</div><div class="item">🥚</div></div>
+    <div class="fridge-door" id="fridgeDoor" onclick="toggleDoor()">🚪 Open/Close</div>
+  </div>
+
+  <div class="inventory">
+    <h2>Inventory</h2>
+    <ul class="inventory-list" id="inventoryList"></ul>
+    <button class="clear-button" onclick="clearInventory()">Clear Inventory</button>
+  </div>
+
+  <audio id="sound-open" src="https://cdn.pixabay.com/audio/2022/03/15/audio_b727bc93d8.mp3"></audio>
+  <audio id="sound-close" src="https://cdn.pixabay.com/audio/2022/03/15/audio_fec67e8702.mp3"></audio>
+  <audio id="sound-move" src="https://cdn.pixabay.com/audio/2023/01/31/audio_4ad6715b71.mp3"></audio>
+  <audio id="sound-clear" src="https://cdn.pixabay.com/audio/2022/03/15/audio_80fc83975b.mp3"></audio>
+
+  <script>
+    const fridgeDoor = document.getElementById('fridgeDoor');
+    const fridgeBody = document.getElementById('fridgeBody');
+    const inventoryList = document.getElementById('inventoryList');
+
+    const soundOpen = document.getElementById('sound-open');
+    const soundClose = document.getElementById('sound-close');
+    const soundMove = document.getElementById('sound-move');
+    const soundClear = document.getElementById('sound-clear');
+
+    const allItems = [
+      { name: 'Lettuce', emoji: '🥬' },
+      { name: 'Tomato', emoji: '🍅' },
+      { name: 'Milk', emoji: '🥛' },
+      { name: 'Cheese', emoji: '🧀' },
+      { name: 'Carrot', emoji: '🥕' },
+      { name: 'Egg', emoji: '🥚' },
+    ];
+
+    let inventory = JSON.parse(localStorage.getItem('fridgeInventory')) || [];
+    let fridgeItems = allItems.filter(i => !inventory.includes(i.name));
+
+    function toggleDoor() {
+      fridgeDoor.classList.toggle('door-open');
+      if (fridgeDoor.classList.contains('door-open')) {
+        soundOpen.play();
+      } else {
+        soundClose.play();
+      }
+    }
+
+    function renderFridge() {
+      fridgeBody.innerHTML = '';
+      fridgeItems.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.textContent = item.emoji;
+        div.onclick = () => moveToInventory(item.name);
+        fridgeBody.appendChild(div);
+      });
+    }
+
+    function renderInventory() {
+      inventoryList.innerHTML = '';
+      inventory.forEach(name => {
+        const item = allItems.find(i => i.name === name);
+        const li = document.createElement('li');
+        li.innerHTML = `${item.emoji} ${item.name} <span class="remove-btn" onclick="moveToFridge('${item.name}')">❌</span>`;
+        inventoryList.appendChild(li);
+      });
+    }
+
+    function moveToInventory(name) {
+      if (!inventory.includes(name)) {
+        inventory.push(name);
+        fridgeItems = fridgeItems.filter(i => i.name !== name);
+        saveInventory();
+        soundMove.play();
+        renderFridge();
+        renderInventory();
+      }
+    }
+
+    function moveToFridge(name) {
+      inventory = inventory.filter(i => i !== name);
+      const item = allItems.find(i => i.name === name);
+      fridgeItems.push(item);
+      saveInventory();
+      soundMove.play();
+      renderFridge();
+      renderInventory();
+    }
+
+    function clearInventory() {
+      inventory = [];
+      fridgeItems = [...allItems];
+      saveInventory();
+      soundClear.play();
+      renderFridge();
+      renderInventory();
+    }
+
+    function saveInventory() {
+      localStorage.setItem('fridgeInventory', JSON.stringify(inventory));
+    }
+
+    renderFridge();
+    renderInventory();
+  </script>
+
+
+</body></html>

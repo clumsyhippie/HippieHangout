@@ -222,13 +222,13 @@
         
         <audio id="living-sound" src="Sounds/living.mp4" preload="auto"></audio>
         <audio id="kitchen-sound" src="Sounds/kitchen.mp4" preload="auto"></audio>
-        <audio id="porch-sound" src="Sounds/porch.mp4" preload="auto"></audio>
+        <audio id="bedroom-sound" src="Sounds/bedroom.mp4" preload="auto"></audio>
         <audio id="garden-sound" src="Sounds/garden.mp4" preload="auto"></audio>
         
         <audio id="amb-front" src="Sounds/ambFront.mp3" preload="auto" loop=""></audio>
         <audio id="amb-living" src="Sounds/ambLiving.mp3" preload="auto" loop=""></audio>
         <audio id="amb-kitchen" src="Sounds/ambKitchen.mp3" preload="auto" loop=""></audio>
-        <audio id="amb-porch" src="Sounds/ambPorch.mp3" preload="auto" loop=""></audio>
+        <audio id="amb-bedroom" src="Sounds/ambBedroom.mp3" preload="auto" loop=""></audio>
         <audio id="amb-garden" src="Sounds/ambGarden.mp3" preload="auto" loop=""></audio>
         
         <!-- Mute Button -->
@@ -368,8 +368,8 @@
                 <div class="absolute inset-0"></div>
             </div>
             
-            <!-- Porch -->
-            <div id="porch" class="room opacity-0 pointer-events-none" style="background-image: url('images/porch.gif');">
+            <!-- bedroom -->
+            <div id="bedroom" class="room opacity-0 pointer-events-none" style="background-image: url('images/bedroom.gif');">
                 <div class="absolute inset-0"></div>
             </div>
             
@@ -383,8 +383,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Room Navigation
-            const rooms = ['living-room', 'kitchen', 'porch', 'garden'];
-            const roomNames = ['Living Room', 'Kitchen', 'Porch', 'Garden'];
+            const rooms = ['living-room', 'kitchen', 'bedroom', 'garden'];
+            const roomNames = ['Living Room', 'Kitchen', 'bedroom', 'Garden'];
             
             // Door interaction sounds
             const doorbellSound = document.getElementById('doorbell-sound');
@@ -397,7 +397,7 @@
             const roomSounds = {
                 'living-room': document.getElementById('living-sound'),
                 'kitchen': document.getElementById('kitchen-sound'),
-                'porch': document.getElementById('porch-sound'),
+                'bedroom': document.getElementById('bedroom-sound'),
                 'garden': document.getElementById('garden-sound')
             };
             
@@ -406,7 +406,7 @@
                 'front': document.getElementById('amb-front'),
                 'living-room': document.getElementById('amb-living'),
                 'kitchen': document.getElementById('amb-kitchen'),
-                'porch': document.getElementById('amb-porch'),
+                'bedroom': document.getElementById('amb-bedroom'),
                 'garden': document.getElementById('amb-garden')
             };
             
