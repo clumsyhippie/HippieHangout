@@ -1,7 +1,7 @@
 <html lang="en" style="height: 100%;"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avatar Customizer</title>
+    <title>Avatar Chat Room</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -12,6 +12,7 @@
             height: 100%;
             width: 100%;
             overflow: hidden;
+            background-color: #f0f0f0;
         }
         
         .avatar-customizer-container * {
@@ -33,7 +34,13 @@
         .avatar-customizer-container .option-btn, 
         .avatar-customizer-container .bg-nav-arrow, 
         .avatar-customizer-container .bg-dot,
-        .avatar-customizer-container .main-avatar {
+        .avatar-customizer-container .main-avatar,
+        .avatar-customizer-container .chat-input,
+        .avatar-customizer-container .chat-container,
+        .avatar-customizer-container .chat-header,
+        .avatar-customizer-container .chat-history-panel,
+        .avatar-customizer-container .username-modal,
+        .avatar-customizer-container .voice-controls {
             cursor: pointer;
             pointer-events: auto;
         }
@@ -98,29 +105,30 @@
             height: 600px;
         }
         
-        .main-avatar {
+        .avatar {
             position: fixed;
-            width: 600px; /* Doubled from 300px */
-            height: 600px; /* Doubled from 300px */
-            z-index: 9989; /* Lower than popup overlay */
+            width: 600px;
+            height: 600px;
+            z-index: 9989;
             touch-action: none;
             user-select: none;
             pointer-events: auto;
             cursor: pointer !important;
-            bottom: 0; /* Position at the very bottom by default */
+            bottom: 0;
             left: 50%;
             transform: translateX(-50%);
         }
         
-        .main-avatar.dragging {
+        .avatar.dragging {
             cursor: pointer !important;
-            animation: wiggle 0.5s infinite alternate;
+            animation: pickup 0.3s forwards;
             filter: brightness(1.2);
         }
         
-        @keyframes wiggle {
-            0% { transform: rotate(-2deg) scale(1.05); }
-            100% { transform: rotate(2deg) scale(1.1); }
+        @keyframes pickup {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1.05); }
         }
         
         .avatar-layer {
@@ -338,19 +346,333 @@
         #openCustomizer {
             position: fixed;
             top: 10px;
-            right: 70px; /* Positioned on the right with space for another button */
+            right: 70px;
             z-index: 9991;
             pointer-events: auto;
         }
+        
+        /* Chat container styles */
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 300px;
+            background-color: rgba(139, 111, 78, 0.8);
+            border: 4px solid #f8e8b0;
+            border-radius: 8px;
+            padding: 10px;
+            z-index: 9992;
+            pointer-events: auto;
+            transition: height 0.3s ease;
+        }
+        
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .chat-controls {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .chat-input {
+            width: 100%;
+            background-color: rgba(248, 232, 176, 0.3);
+            border: 2px solid #f8e8b0;
+            border-radius: 4px;
+            padding: 8px;
+            color: #f8e8b0;
+            font-size: 10px;
+            margin-top: 5px;
+        }
+        
+        .chat-input::placeholder {
+            color: rgba(248, 232, 176, 0.7);
+        }
+        
+        .chat-input:focus {
+            outline: none;
+            background-color: rgba(248, 232, 176, 0.4);
+        }
+        
+        .chat-send-btn {
+            background-color: #6b8e23;
+            border: 2px solid #f8e8b0;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 10px;
+            margin-top: 5px;
+            transition: all 0.2s ease;
+        }
+        
+        .chat-send-btn:hover {
+            background-color: #7ba32c;
+            transform: translateY(-1px);
+        }
+        
+        /* Speech bubble styles */
+        .speech-bubble {
+            position: absolute;
+            max-width: 250px;
+            background-color: rgba(248, 232, 176, 0.9);
+            border: 3px solid #5a3e2b;
+            border-radius: 12px;
+            padding: 10px;
+            font-size: 12px;
+            color: #5a3e2b;
+            z-index: 9993;
+            animation: bubble-appear 0.3s ease-out forwards;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+        
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: #5a3e2b transparent transparent transparent;
+        }
+        
+        @keyframes bubble-appear {
+            0% { opacity: 0; transform: translateY(20px) scale(0.8); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        @keyframes bubble-disappear {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-20px) scale(0.8); }
+        }
+        
+        /* Chat history panel */
+        .chat-history-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 340px;
+            width: 400px;
+            height: 300px;
+            background-color: rgba(139, 111, 78, 0.9);
+            border: 4px solid #f8e8b0;
+            border-radius: 8px;
+            padding: 10px;
+            z-index: 9992;
+            display: none;
+            flex-direction: column;
+        }
+        
+        .chat-history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+        
+        .chat-history-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 5px;
+            background-color: rgba(248, 232, 176, 0.2);
+            border-radius: 4px;
+        }
+        
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 8px;
+            background-color: rgba(248, 232, 176, 0.3);
+            font-size: 10px;
+            word-break: break-word;
+        }
+        
+        .chat-message .username {
+            font-weight: bold;
+            color: #f8e8b0;
+            margin-bottom: 4px;
+        }
+        
+        .chat-message .message-text {
+            color: #f8e8b0;
+        }
+        
+        /* Username modal */
+        .username-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        
+        .username-modal-content {
+            background-color: #8b6f4e;
+            border: 4px solid #f8e8b0;
+            border-radius: 8px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .username-modal-title {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #f8e8b0;
+        }
+        
+        .username-input {
+            width: 100%;
+            background-color: rgba(248, 232, 176, 0.3);
+            border: 2px solid #f8e8b0;
+            border-radius: 4px;
+            padding: 10px;
+            color: #f8e8b0;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .username-input::placeholder {
+            color: rgba(248, 232, 176, 0.7);
+        }
+        
+        .username-input:focus {
+            outline: none;
+            background-color: rgba(248, 232, 176, 0.4);
+        }
+        
+        .username-submit {
+            background-color: #6b8e23;
+            border: 3px solid #f8e8b0;
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-size: 12px;
+            color: #f8e8b0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .username-submit:hover {
+            background-color: #7ba32c;
+            transform: translateY(-2px);
+        }
+        
+        /* Voice chat controls */
+        .voice-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .mic-button {
+            background-color: #a67c52;
+            border: 2px solid #f8e8b0;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .mic-button:hover {
+            background-color: #b68c62;
+        }
+        
+        .mic-button.active {
+            background-color: #e74c3c;
+        }
+        
+        .voice-indicator {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 20px;
+        }
+        
+        .voice-bar {
+            width: 3px;
+            height: 5px;
+            background-color: #f8e8b0;
+            border-radius: 1px;
+            transition: height 0.1s ease;
+        }
+        
+        @keyframes voiceAnimation {
+            0% { height: 5px; }
+            50% { height: 15px; }
+            100% { height: 5px; }
+        }
+        
+        .speaking .voice-bar {
+            animation: voiceAnimation 0.5s infinite;
+        }
+        
+        .speaking .voice-bar:nth-child(1) { animation-delay: 0.0s; }
+        .speaking .voice-bar:nth-child(2) { animation-delay: 0.1s; }
+        .speaking .voice-bar:nth-child(3) { animation-delay: 0.2s; }
+        .speaking .voice-bar:nth-child(4) { animation-delay: 0.3s; }
+        .speaking .voice-bar:nth-child(5) { animation-delay: 0.4s; }
+        
+        /* User label */
+        .user-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(139, 111, 78, 0.8);
+            border: 2px solid #f8e8b0;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 10px;
+            color: #f8e8b0;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        
+        /* Other users' avatars */
+        .other-user {
+            opacity: 0.8;
+            pointer-events: none;
+        }
+        
+        .other-user .user-label {
+            background-color: rgba(107, 142, 35, 0.8);
+        }
     </style>
-<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.mb-2{margin-bottom:0.5rem}.flex{display:flex}.grid{display:grid}.h-6{height:1.5rem}.w-6{width:1.5rem}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.justify-end{justify-content:flex-end}.gap-2{gap:0.5rem}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.rounded-lg{border-radius:0.5rem}.p-2{padding:0.5rem}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}</style></head>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.mb-2{margin-bottom:0.5rem}.mr-2{margin-right:0.5rem}.flex{display:flex}.grid{display:grid}.h-6{height:1.5rem}.w-6{width:1.5rem}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.justify-end{justify-content:flex-end}.gap-2{gap:0.5rem}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.rounded-lg{border-radius:0.5rem}.p-2{padding:0.5rem}.text-xs{font-size:0.75rem;line-height:1rem}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}</style></head>
 <body style="height: 100%;">
     <div class="avatar-customizer-container">
+        <!-- Username Modal -->
+        <div id="usernameModal" class="username-modal" style="display: none;">
+            <div class="username-modal-content">
+                <h2 class="username-modal-title">ENTER YOUR USERNAME</h2>
+                <input type="text" id="usernameInput" class="username-input" placeholder="Your username..." maxlength="15">
+                <button id="usernameSubmit" class="username-submit" style="cursor: pointer;">JOIN CHAT</button>
+            </div>
+        </div>
+        
         <!-- Main Avatar Display (always visible and draggable) -->
-        <div id="mainAvatar" class="main-avatar" style="bottom: -360px; left: 50%; transform: translateX(-50%); top: auto; cursor: pointer;">
+        <div id="mainAvatar" class="avatar" style="bottom: -360px; left: 50%; transform: translateX(-50%); top: auto; cursor: pointer;">
             <img id="mainBodyLayer" class="avatar-layer" src="../Avatar/Images/Default.png" alt="Body">
             <img id="mainHairLayer" class="avatar-layer" src="" alt="Hair" style="display: none;">
             <img id="mainEyesLayer" class="avatar-layer" src="../Avatar/Images/Eyes.png" alt="Eyes" style="display: block;">
+            <div id="userLabel" class="user-label">clumsy_hippie</div>
         </div>
         
         <!-- Button to open the popup (at the top right) -->
@@ -358,10 +680,54 @@
             CUSTOMIZE AVATAR
         </button>
         
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <div id="chatHeader" class="chat-header">
+                <span>CHAT</span>
+                <div class="chat-controls">
+                    <button id="showHistory" class="text-xs mr-2" style="cursor: pointer;">📜</button>
+                    <button id="minimizeChat" class="text-xs" style="cursor: pointer;">_</button>
+                </div>
+            </div>
+            <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." maxlength="100">
+            <div class="flex justify-end">
+                <button id="sendChat" class="chat-send-btn" style="cursor: pointer;">SEND</button>
+            </div>
+            
+            <!-- Voice Chat Controls -->
+            <div class="voice-controls">
+                <div id="micButton" class="mic-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#f8e8b0" viewBox="0 0 16 16">
+                        <path d="M8 1a2 2 0 0 1 2 2v4a2 2 0 1 1-4 0V3a2 2 0 0 1 2-2zm6 6a.5.5 0 0 1 .5.5v1a6.5 6.5 0 0 1-13 0v-1a.5.5 0 0 1 1 0v1a5.5 5.5 0 0 0 11 0v-1a.5.5 0 0 1 .5-.5z"></path>
+                        <path d="M8 0a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3z"></path>
+                    </svg>
+                </div>
+                <div id="voiceIndicator" class="voice-indicator">
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat History Panel -->
+        <div id="chatHistoryPanel" class="chat-history-panel">
+            <div class="chat-history-header">
+                <span>CHAT HISTORY</span>
+                <button id="closeHistory" class="text-xs" style="cursor: pointer;">X</button>
+            </div>
+            <div id="chatHistoryContent" class="chat-history-content">
+                <!-- Chat messages will be added here -->
+            </div>
+        </div>
+        
         <!-- Audio elements -->
         <audio id="buttonSound" src="../Avatar/Sounds/button.mp3" preload="auto"></audio>
         <audio id="pickupSound" src="../Avatar/Sounds/pickup.mp3" preload="auto"></audio>
         <audio id="putdownSound" src="../Avatar/Sounds/putdown.mp3" preload="auto"></audio>
+        <audio id="chatSound" src="../Avatar/Sounds/chat.mp3" preload="auto"></audio>
         
         <!-- Popup Overlay -->
         <div id="customizer" class="popup-overlay">
@@ -490,11 +856,40 @@
             const buttonSound = document.getElementById('buttonSound');
             const pickupSound = document.getElementById('pickupSound');
             const putdownSound = document.getElementById('putdownSound');
+            const chatSound = document.getElementById('chatSound');
             const fittingRoom = document.getElementById('fittingRoom');
             const prevBgBtn = document.getElementById('prevBg');
             const nextBgBtn = document.getElementById('nextBg');
             const bgIndicator = document.getElementById('bgIndicator');
             const mainAvatar = document.getElementById('mainAvatar');
+            const chatInput = document.getElementById('chatInput');
+            const sendChatBtn = document.getElementById('sendChat');
+            const minimizeChatBtn = document.getElementById('minimizeChat');
+            const chatHeader = document.getElementById('chatHeader');
+            const showHistoryBtn = document.getElementById('showHistory');
+            const closeHistoryBtn = document.getElementById('closeHistory');
+            const chatHistoryPanel = document.getElementById('chatHistoryPanel');
+            const chatHistoryContent = document.getElementById('chatHistoryContent');
+            const usernameModal = document.getElementById('usernameModal');
+            const usernameInput = document.getElementById('usernameInput');
+            const usernameSubmit = document.getElementById('usernameSubmit');
+            const userLabel = document.getElementById('userLabel');
+            const micButton = document.getElementById('micButton');
+            const voiceIndicator = document.getElementById('voiceIndicator');
+            
+            // Chat container state
+            let isChatMinimized = false;
+            const chatContainer = document.querySelector('.chat-container');
+            
+            // Username state
+            let username = "User";
+            
+            // Voice chat state
+            let isMicActive = false;
+            let voiceAnimationInterval = null;
+            
+            // Chat history
+            let chatHistory = [];
             
             // Avatar layers in customizer
             const bodyLayer = document.getElementById('bodyLayer');
@@ -520,6 +915,81 @@
                 { name: "Background5", path: "../Avatar/Images/Background5.png" }
             ];
             let currentBgIndex = 0;
+            
+            // Simulated other users
+            const otherUsers = [
+                { 
+                    id: 'user1', 
+                    username: 'CoolCat42', 
+                    body: 'Default_Blue', 
+                    hair: 'Hairstyle1', 
+                    eyes: 'Blue_Eyes',
+                    position: { x: '20%', y: '60%' }
+                },
+                { 
+                    id: 'user2', 
+                    username: 'PixelPal', 
+                    body: 'Default_Purple', 
+                    hair: 'Hairstyle2', 
+                    eyes: 'Pink_Eyes',
+                    position: { x: '70%', y: '70%' }
+                },
+                { 
+                    id: 'user3', 
+                    username: 'RetroGamer', 
+                    body: 'Default', 
+                    hair: 'none', 
+                    eyes: 'Green_Eyes',
+                    position: { x: '85%', y: '65%' }
+                }
+            ];
+            
+            // Create other users' avatars
+            function createOtherUsers() {
+                otherUsers.forEach(user => {
+                    // Create avatar container
+                    const avatar = document.createElement('div');
+                    avatar.id = user.id;
+                    avatar.className = 'avatar other-user';
+                    avatar.style.left = user.position.x;
+                    avatar.style.top = user.position.y;
+                    avatar.style.transform = 'none';
+                    avatar.style.bottom = 'auto';
+                    
+                    // Create avatar layers
+                    const bodyImg = document.createElement('img');
+                    bodyImg.className = 'avatar-layer';
+                    bodyImg.src = `../Avatar/Images/${user.body}.png`;
+                    bodyImg.alt = 'Body';
+                    
+                    const eyesImg = document.createElement('img');
+                    eyesImg.className = 'avatar-layer';
+                    eyesImg.src = `../Avatar/Images/${user.eyes}.png`;
+                    eyesImg.alt = 'Eyes';
+                    
+                    // Add hair if present
+                    if (user.hair !== 'none') {
+                        const hairImg = document.createElement('img');
+                        hairImg.className = 'avatar-layer';
+                        hairImg.src = `../Avatar/Images/${user.hair}.png`;
+                        hairImg.alt = 'Hair';
+                        avatar.appendChild(hairImg);
+                    }
+                    
+                    // Create username label
+                    const label = document.createElement('div');
+                    label.className = 'user-label';
+                    label.textContent = user.username;
+                    
+                    // Add elements to avatar
+                    avatar.appendChild(bodyImg);
+                    avatar.appendChild(eyesImg);
+                    avatar.appendChild(label);
+                    
+                    // Add avatar to document
+                    document.querySelector('.avatar-customizer-container').appendChild(avatar);
+                });
+            }
             
             // Create background indicator dots
             function createBgIndicators() {
@@ -638,6 +1108,14 @@
                     // Position at bottom center by default
                     positionAvatarAtBottom();
                 }
+                
+                // Load saved username if exists
+                if (localStorage.getItem('username')) {
+                    username = localStorage.getItem('username');
+                    userLabel.textContent = username;
+                    // Skip username modal if already set
+                    usernameModal.style.display = 'none';
+                }
             }
             
             // Function to position avatar at the bottom of the screen
@@ -740,6 +1218,12 @@
             function playPutdownSound() {
                 putdownSound.currentTime = 0;
                 putdownSound.play().catch(e => console.log("Audio play failed:", e));
+            }
+            
+            // Function to play chat sound
+            function playChatSound() {
+                chatSound.currentTime = 0;
+                chatSound.play().catch(e => console.log("Audio play failed:", e));
             }
             
             // Add sound to all buttons with data-sound attribute
@@ -891,9 +1375,9 @@
                 const topMargin = 20; // Reduced top margin
                 
                 // Calculate boundaries to ensure avatar is always visible
-                // Allow avatar to go partially off-screen, but keep at least 1/4 visible
-                const minX = -mainAvatar.offsetWidth * 0.75;
-                const maxX = window.innerWidth - mainAvatar.offsetWidth * 0.25;
+                // Don't allow avatar to go off-screen
+                const minX = 0;
+                const maxX = window.innerWidth - mainAvatar.offsetWidth;
                 const minY = topMargin;
                 const maxY = window.innerHeight - mainAvatar.offsetHeight * 0.25;
                 
@@ -904,6 +1388,9 @@
                 mainAvatar.style.top = newY + 'px';
                 mainAvatar.style.transform = 'none';
                 mainAvatar.style.bottom = 'auto'; // Clear bottom positioning when dragging
+                
+                // Update speech bubbles position
+                updateSpeechBubblesPosition();
                 
                 e.preventDefault();
             }
@@ -947,9 +1434,9 @@
                 const topMargin = 20; // Reduced top margin
                 
                 // Calculate boundaries to ensure avatar is always visible
-                // Allow avatar to go partially off-screen, but keep at least 1/4 visible
-                const minX = -mainAvatar.offsetWidth * 0.75;
-                const maxX = window.innerWidth - mainAvatar.offsetWidth * 0.25;
+                // Don't allow avatar to go off-screen
+                const minX = 0;
+                const maxX = window.innerWidth - mainAvatar.offsetWidth;
                 const minY = topMargin;
                 const maxY = window.innerHeight - mainAvatar.offsetHeight * 0.25;
                 
@@ -960,6 +1447,9 @@
                 mainAvatar.style.top = newY + 'px';
                 mainAvatar.style.transform = 'none';
                 mainAvatar.style.bottom = 'auto'; // Clear bottom positioning when dragging
+                
+                // Update speech bubbles position
+                updateSpeechBubblesPosition();
                 
                 e.preventDefault();
             }
@@ -974,8 +1464,354 @@
                 saveAvatarPosition();
             }
             
+            // Chat functionality
+            function sendChat() {
+                const message = chatInput.value.trim();
+                if (message === '') return;
+                
+                // Play chat sound
+                playChatSound();
+                
+                // Create speech bubble
+                createSpeechBubble(message, username);
+                
+                // Add to chat history
+                addToChatHistory(username, message);
+                
+                // Clear input
+                chatInput.value = '';
+                
+                // Simulate other users responding occasionally
+                if (Math.random() > 0.5) {
+                    setTimeout(() => {
+                        const randomUser = otherUsers[Math.floor(Math.random() * otherUsers.length)];
+                        const randomMessages = [
+                            "Hey there!",
+                            "Cool avatar!",
+                            "How's it going?",
+                            "Nice to meet you!",
+                            "I like your style!",
+                            "What's up?",
+                            "Hello everyone!",
+                            "This is fun!",
+                            "Anyone want to chat?",
+                            "I'm new here!"
+                        ];
+                        const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+                        
+                        // Create speech bubble for other user
+                        createOtherUserSpeechBubble(randomMessage, randomUser);
+                        
+                        // Add to chat history
+                        addToChatHistory(randomUser.username, randomMessage);
+                        
+                        // Play chat sound
+                        playChatSound();
+                    }, Math.random() * 3000 + 1000);
+                }
+            }
+            
+            // Create speech bubble above avatar
+            function createSpeechBubble(message, username) {
+                // Get existing bubbles
+                const existingBubbles = document.querySelectorAll('.speech-bubble[data-user="' + username + '"]');
+                
+                // If we already have 3 bubbles, remove the oldest one
+                if (existingBubbles.length >= 3) {
+                    existingBubbles[0].remove();
+                }
+                
+                // Create new speech bubble
+                const bubble = document.createElement('div');
+                bubble.className = 'speech-bubble';
+                bubble.textContent = message;
+                bubble.setAttribute('data-user', username);
+                document.body.appendChild(bubble);
+                
+                // Position bubble above avatar
+                positionSpeechBubble(bubble, mainAvatar, existingBubbles.length);
+                
+                // Remove bubble after 5 seconds
+                setTimeout(() => {
+                    bubble.style.animation = 'bubble-disappear 0.3s forwards';
+                    setTimeout(() => bubble.remove(), 300);
+                }, 5000);
+            }
+            
+            // Create speech bubble for other users
+            function createOtherUserSpeechBubble(message, user) {
+                const otherAvatar = document.getElementById(user.id);
+                if (!otherAvatar) return;
+                
+                // Get existing bubbles
+                const existingBubbles = document.querySelectorAll('.speech-bubble[data-user="' + user.username + '"]');
+                
+                // If we already have 3 bubbles, remove the oldest one
+                if (existingBubbles.length >= 3) {
+                    existingBubbles[0].remove();
+                }
+                
+                // Create new speech bubble
+                const bubble = document.createElement('div');
+                bubble.className = 'speech-bubble';
+                bubble.textContent = message;
+                bubble.setAttribute('data-user', user.username);
+                document.body.appendChild(bubble);
+                
+                // Position bubble above avatar
+                positionSpeechBubble(bubble, otherAvatar, existingBubbles.length);
+                
+                // Remove bubble after 5 seconds
+                setTimeout(() => {
+                    bubble.style.animation = 'bubble-disappear 0.3s forwards';
+                    setTimeout(() => bubble.remove(), 300);
+                }, 5000);
+                
+                // Simulate voice chat
+                if (Math.random() > 0.7) {
+                    simulateVoiceChat(user.id);
+                }
+            }
+            
+            // Position speech bubble above avatar
+            function positionSpeechBubble(bubble, avatar, bubbleIndex) {
+                const avatarRect = avatar.getBoundingClientRect();
+                const bubbleWidth = bubble.offsetWidth;
+                
+                // Position bubble centered above avatar
+                // Adjust vertical position based on bubble index (0, 1, or 2)
+                // This stacks bubbles from bottom to top
+                const left = avatarRect.left + (avatarRect.width / 2) - (bubbleWidth / 2);
+                const top = avatarRect.top - bubble.offsetHeight - 20 - (bubbleIndex * (bubble.offsetHeight + 10));
+                
+                bubble.style.left = `${left}px`;
+                bubble.style.top = `${top}px`;
+            }
+            
+            // Update all speech bubbles positions
+            function updateSpeechBubblesPosition() {
+                const bubbles = document.querySelectorAll('.speech-bubble[data-user="' + username + '"]');
+                bubbles.forEach((bubble, index) => {
+                    positionSpeechBubble(bubble, mainAvatar, index);
+                });
+            }
+            
+            // Add message to chat history
+            function addToChatHistory(user, message) {
+                // Add to chat history array
+                chatHistory.push({ user, message, timestamp: new Date() });
+                
+                // Create message element
+                const messageElement = document.createElement('div');
+                messageElement.className = 'chat-message';
+                
+                const usernameElement = document.createElement('div');
+                usernameElement.className = 'username';
+                usernameElement.textContent = user;
+                
+                const messageTextElement = document.createElement('div');
+                messageTextElement.className = 'message-text';
+                messageTextElement.textContent = message;
+                
+                messageElement.appendChild(usernameElement);
+                messageElement.appendChild(messageTextElement);
+                
+                // Add to chat history panel
+                chatHistoryContent.appendChild(messageElement);
+                
+                // Scroll to bottom
+                chatHistoryContent.scrollTop = chatHistoryContent.scrollHeight;
+            }
+            
+            // Username submission
+            usernameSubmit.addEventListener('click', () => {
+                const name = usernameInput.value.trim();
+                if (name !== '') {
+                    username = name;
+                    userLabel.textContent = username;
+                    localStorage.setItem('username', username);
+                    usernameModal.style.display = 'none';
+                    playButtonSound();
+                    
+                    // Create welcome message
+                    setTimeout(() => {
+                        addToChatHistory('System', `Welcome to the chat, ${username}!`);
+                        createSpeechBubble(`Hi, I'm ${username}!`, username);
+                    }, 500);
+                    
+                    // Create other users
+                    createOtherUsers();
+                    
+                    // Simulate other users greeting
+                    setTimeout(() => {
+                        otherUsers.forEach((user, index) => {
+                            setTimeout(() => {
+                                const greeting = `Hey ${username}, welcome!`;
+                                createOtherUserSpeechBubble(greeting, user);
+                                addToChatHistory(user.username, greeting);
+                                playChatSound();
+                            }, index * 1500);
+                        });
+                    }, 2000);
+                }
+            });
+            
+            // Allow Enter key for username submission
+            usernameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    usernameSubmit.click();
+                }
+            });
+            
+            // Chat event listeners
+            sendChatBtn.addEventListener('click', sendChat);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendChat();
+            });
+            
+            // Make whole chat header clickable for minimize/maximize
+            chatHeader.addEventListener('click', (e) => {
+                // Don't trigger if clicking on the history button
+                if (e.target === showHistoryBtn || e.target.parentNode === showHistoryBtn) {
+                    return;
+                }
+                
+                playButtonSound();
+                
+                if (isChatMinimized) {
+                    // Maximize
+                    chatContainer.style.height = 'auto';
+                    chatInput.style.display = 'block';
+                    sendChatBtn.style.display = 'block';
+                    document.querySelector('.voice-controls').style.display = 'flex';
+                    minimizeChatBtn.textContent = '_';
+                } else {
+                    // Minimize
+                    chatContainer.style.height = '40px';
+                    chatInput.style.display = 'none';
+                    sendChatBtn.style.display = 'none';
+                    document.querySelector('.voice-controls').style.display = 'none';
+                    minimizeChatBtn.textContent = '□';
+                }
+                
+                isChatMinimized = !isChatMinimized;
+            });
+            
+            // Chat history panel controls
+            showHistoryBtn.addEventListener('click', () => {
+                playButtonSound();
+                chatHistoryPanel.style.display = 'flex';
+            });
+            
+            closeHistoryBtn.addEventListener('click', () => {
+                playButtonSound();
+                chatHistoryPanel.style.display = 'none';
+            });
+            
+            // Voice chat controls
+            micButton.addEventListener('click', () => {
+                playButtonSound();
+                isMicActive = !isMicActive;
+                
+                if (isMicActive) {
+                    // Activate microphone
+                    micButton.classList.add('active');
+                    voiceIndicator.classList.add('speaking');
+                    
+                    // Create speech bubble to indicate voice chat
+                    createSpeechBubble("🎤 Voice chat active", username);
+                    
+                    // Add system message to chat history
+                    addToChatHistory('System', `${username} started voice chat`);
+                    
+                    // Simulate voice activity
+                    simulateVoiceChat('mainAvatar');
+                } else {
+                    // Deactivate microphone
+                    micButton.classList.remove('active');
+                    voiceIndicator.classList.remove('speaking');
+                    
+                    // Add system message to chat history
+                    addToChatHistory('System', `${username} ended voice chat`);
+                    
+                    // Clear any voice animation interval
+                    if (voiceAnimationInterval) {
+                        clearInterval(voiceAnimationInterval);
+                        voiceAnimationInterval = null;
+                    }
+                }
+            });
+            
+            // Simulate voice chat activity
+            function simulateVoiceChat(avatarId) {
+                const avatar = document.getElementById(avatarId);
+                if (!avatar) return;
+                
+                // Create voice indicator if it doesn't exist
+                let voiceIcon = avatar.querySelector('.voice-icon');
+                if (!voiceIcon) {
+                    voiceIcon = document.createElement('div');
+                    voiceIcon.className = 'voice-icon';
+                    voiceIcon.style.position = 'absolute';
+                    voiceIcon.style.top = '20px';
+                    voiceIcon.style.right = '20px';
+                    voiceIcon.style.width = '40px';
+                    voiceIcon.style.height = '40px';
+                    voiceIcon.style.backgroundColor = 'rgba(139, 111, 78, 0.8)';
+                    voiceIcon.style.borderRadius = '50%';
+                    voiceIcon.style.border = '2px solid #f8e8b0';
+                    voiceIcon.style.display = 'flex';
+                    voiceIcon.style.justifyContent = 'center';
+                    voiceIcon.style.alignItems = 'center';
+                    voiceIcon.style.zIndex = '9994';
+                    
+                    // Create speaker icon
+                    const speakerSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    speakerSvg.setAttribute('width', '20');
+                    speakerSvg.setAttribute('height', '20');
+                    speakerSvg.setAttribute('viewBox', '0 0 24 24');
+                    speakerSvg.setAttribute('fill', '#f8e8b0');
+                    
+                    const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path1.setAttribute('d', 'M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z');
+                    
+                    speakerSvg.appendChild(path1);
+                    voiceIcon.appendChild(speakerSvg);
+                    
+                    // Create voice bars
+                    const voiceBars = document.createElement('div');
+                    voiceBars.className = 'voice-indicator speaking';
+                    voiceBars.style.position = 'absolute';
+                    voiceBars.style.bottom = '-15px';
+                    voiceBars.style.left = '50%';
+                    voiceBars.style.transform = 'translateX(-50%)';
+                    
+                    for (let i = 0; i < 5; i++) {
+                        const bar = document.createElement('div');
+                        bar.className = 'voice-bar';
+                        voiceBars.appendChild(bar);
+                    }
+                    
+                    voiceIcon.appendChild(voiceBars);
+                    avatar.appendChild(voiceIcon);
+                }
+                
+                // Show voice icon
+                voiceIcon.style.display = 'flex';
+                
+                // Remove after random time (2-5 seconds)
+                const duration = Math.random() * 3000 + 2000;
+                setTimeout(() => {
+                    if (voiceIcon && avatarId !== 'mainAvatar') {
+                        voiceIcon.style.display = 'none';
+                    } else if (voiceIcon && avatarId === 'mainAvatar' && !isMicActive) {
+                        voiceIcon.style.display = 'none';
+                    }
+                }, duration);
+            }
+            
             // Set pointer cursor for all interactive elements
-            document.querySelectorAll('button, .option-btn, .bg-nav-arrow, .bg-dot, .main-avatar').forEach(element => {
+            document.querySelectorAll('button, .option-btn, .bg-nav-arrow, .bg-dot, .avatar').forEach(element => {
                 element.style.cursor = 'pointer';
             });
             
@@ -988,8 +1824,54 @@
             // Call on load and resize
             setFullHeight();
             window.addEventListener('resize', setFullHeight);
+            
+            // Reposition speech bubbles when window is resized
+            window.addEventListener('resize', updateSpeechBubblesPosition);
+            
+            // Add event listener to update speech bubble position during drag
+            document.addEventListener('mousemove', () => {
+                if (isDragging) updateSpeechBubblesPosition();
+            });
+            
+            document.addEventListener('touchmove', () => {
+                if (isDragging) updateSpeechBubblesPosition();
+            });
+            
+            // Simulate occasional chat from other users
+            function simulateOtherUserChats() {
+                setInterval(() => {
+                    if (Math.random() > 0.8) {
+                        const randomUser = otherUsers[Math.floor(Math.random() * otherUsers.length)];
+                        const randomMessages = [
+                            "This is so fun!",
+                            "I love this chat room!",
+                            "Anyone want to play a game?",
+                            "How's everyone doing?",
+                            "I just updated my avatar!",
+                            "The weather is nice today!",
+                            "What's everyone up to?",
+                            "I'm having a great day!",
+                            "This place is awesome!",
+                            "Hello everyone!"
+                        ];
+                        const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+                        
+                        // Create speech bubble for other user
+                        createOtherUserSpeechBubble(randomMessage, randomUser);
+                        
+                        // Add to chat history
+                        addToChatHistory(randomUser.username, randomMessage);
+                        
+                        // Play chat sound
+                        playChatSound();
+                    }
+                }, 15000); // Every 15 seconds there's a chance
+            }
+            
+            // Start simulation after a delay
+            setTimeout(simulateOtherUserChats, 5000);
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94b2829060d40829',t:'MTc0OTE1NjI4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94b295bd302828ae',t:'MTc0OTE1NzA3My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
 
 </body></html>
