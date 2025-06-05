@@ -1,215 +1,495 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Fridge</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interactive Fridge with Recipe Book</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f8f9fa;
-      text-align: center;
-      padding: 2rem;
+      margin: 0;
+      padding: 0;
+      background-color: transparent;
+      font-family: 'Press Start 2P', monospace;
+      overflow: hidden;
+      user-select: none;
     }
 
-    .fridge-container {
-      position: relative;
-      width: 300px;
-      height: 500px;
-      margin: 0 auto;
-      perspective: 1000px;
-    }
-
-    .fridge-body {
-      width: 100%;
-      height: 100%;
-      background: #e0f7fa;
-      border: 3px solid #00796b;
-      border-radius: 10px;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-gap: 10px;
-      padding: 10px;
-      box-sizing: border-box;
+    #fridgeContainer {
+      position: absolute;
+      left: -140px;
+      top: 270px;
+      width: 700px;
+      height: auto;
       z-index: 1;
-      position: absolute;
     }
 
-    .fridge-door {
-      width: 100%;
-      height: 100%;
-      background: #b2ebf2;
-      border: 3px solid #00796b;
-      border-radius: 10px;
+    #fridgeOpen {
       position: absolute;
-      transform-origin: left;
-      transform: rotateY(0deg);
-      transition: transform 1s ease;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
+      width: 770px;
+      height: 896px;
+      top: 49px;
+      left: -42px;
+      cursor: pointer;
+      transform: scaleX(-1);
+      visibility: hidden;
+      z-index: 4;
+    }
+
+    #fridgeClosed {
+      position: absolute;
+      width: 490px;
+      height: auto;
+      top: 49px;
+      left: calc(700px - 490px + 21px);
+      cursor: pointer;
+      transform: scaleX(-1);
+      z-index: 6;
+    }
+
+    #inventoryButton {
+      position: absolute;
+      top: 20px;
+      left: 100px;
+      z-index: 10;
+      background-color: #654321;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 15px;
       cursor: pointer;
     }
 
-    .door-open {
-      transform: rotateY(-120deg);
+    #inventory {
+      position: absolute;
+      top: 80px;
+      left: 100px;
+      background-color: #aa8866;
+      border: 3px solid #654321;
+      padding: 16px;
+      display: none;
+      flex-wrap: wrap;
+      width: 300px;
+      min-height: 150px;
+      z-index: 10;
+      transition: all 0.3s ease;
+      font-size: 24px;
     }
 
     .item {
-      background: #fff;
-      border: 2px solid #ccc;
-      border-radius: 5px;
-      padding: 10px;
-      font-size: 1.5rem;
+      position: relative;
+      margin: 0 1px 12px 1px;
       cursor: pointer;
+      display: inline-block;
+      font-size: 36.4px;
     }
 
-    .inventory {
-      margin-top: 2rem;
-      background: #ffffff;
-      border: 2px solid #00796b;
-      border-radius: 8px;
-      padding: 1rem;
-      max-width: 300px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .inventory h2 {
-      margin-top: 0;
-    }
-
-    .inventory-list li {
-      display: flex;
-      justify-content: space-between;
-      margin: 0.5rem 0;
-    }
-
-    .remove-btn {
-      color: red;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .clear-button {
-      margin-top: 10px;
-      background: #d32f2f;
+    .item .tooltip {
+      visibility: hidden;
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: black;
       color: white;
-      padding: 0.5rem 1rem;
+      font-size: 10px;
+      padding: 4px 6px;
+      border-radius: 3px;
+      white-space: nowrap;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .item:hover .tooltip {
+      visibility: visible;
+    }
+
+    .closeBtn {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      font-size: 14px;
+      color: red;
+      background-color: transparent;
       border: none;
-      border-radius: 5px;
       cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      margin: 0;
+      z-index: 5;
+    }
+
+    #fridgeItems {
+      position: absolute;
+      top: 490px;
+      right: 60px;
+      width: 300px;
+      visibility: hidden;
+      font-size: 40px;
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    #fridgeRow1,
+    #fridgeRow2,
+    #fridgeRow3 {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+      column-gap: 2px;
+    }
+
+    #fridgeRow1 {
+      margin-bottom: 12px;
+    }
+
+    #fridgeRow2 {
+      margin-bottom: 12px;
+      position: relative;
+      top: 50px;
+    }
+
+    #fridgeRow3 {
+      position: relative;
+      top: 50px;
+    }
+
+    #freezerItems {
+      position: absolute;
+      top: 170px;
+      right: 100px;
+      width: 180px;
+      visibility: hidden;
+      font-size: 40px;
+      cursor: pointer;
+      z-index: 5;
+      justify-content: end;
+    }
+
+    #freezerRow1,
+    #freezerRow2 {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+      column-gap: 5px;
+      position: relative;
+      left: -10px;
+      margin-bottom: 12px;
+    }
+
+    #freezerRow2 {
+      top: 30px;
+    }
+
+    /* Recipe Book Styles */
+    #recipeBookIcon {
+      position: absolute;
+      bottom: 40px;
+      left: 40px;
+      width: 120px;
+      height: auto;
+      cursor: pointer;
+      z-index: 8;
+      user-select: none;
+    }
+
+    #recipeBookModal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      background: #fff8e1;
+      border: 8px solid #8b5e3c;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+      transform: translate(-50%, -50%);
+      display: none;
+      padding: 20px 30px;
+      font-family: 'Press Start 2P', monospace;
+      z-index: 50;
+    }
+
+    #recipeBookModal h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    #recipeBookModal ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    #recipeBookModal li {
+      margin-bottom: 15px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 8px;
+      font-size: 14px;
+    }
+
+    #recipeBookClose {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #8b5e3c;
+      cursor: pointer;
+      user-select: none;
     }
   </style>
+
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
 </head>
+
 <body>
-  <h1>Interactive Fridge</h1>
-  <div class="fridge-container">
-    <div class="fridge-body" id="fridgeBody"></div>
-    <div class="fridge-door" id="fridgeDoor" onclick="toggleDoor()">🚪 Open/Close</div>
+
+  <button id="inventoryButton">Inventory</button>
+  <div id="inventory"></div>
+
+  <div id="fridgeContainer">
+    <img id="fridgeOpen" src="../Images/intFridge.png" alt="Open Fridge" />
+    <img id="fridgeClosed" src="../Images/fridgeDoor.png" alt="Closed Fridge" />
+
+    <div id="freezerItems">
+      <div id="freezerRow1">
+        <div class="item" data-name="Ice Cream">🍨<span class="tooltip">Ice Cream</span></div>
+        <div class="item" data-name="Meat">🥩<span class="tooltip">Meat</span></div>
+        <div class="item" data-name="Frozen Peas">🟢<span class="tooltip">Frozen Peas</span></div>
+        <div class="item" data-name="Frozen Meal">🍱<span class="tooltip">Frozen Meal</span></div>
+      </div>
+      <div id="freezerRow2">
+        <div class="item" data-name="Waffle">🧇<span class="tooltip">Waffle</span></div>
+        <div class="item" data-name="Fish">🐟<span class="tooltip">Fish</span></div>
+        <div class="item" data-name="Berries">🫐<span class="tooltip">Berries</span></div>
+        <div class="item" data-name="Dumplings">🥟<span class="tooltip">Dumplings</span></div>
+      </div>
+    </div>
+
+    <div id="fridgeItems">
+      <div id="fridgeRow1">
+        <div class="item" data-name="Lettuce">🥬<span class="tooltip">Lettuce</span></div>
+        <div class="item" data-name="Tomato">🍅<span class="tooltip">Tomato</span></div>
+        <div class="item" data-name="Carrot">🥕<span class="tooltip">Carrot</span></div>
+        <div class="item" data-name="Cucumber">🥒<span class="tooltip">Cucumber</span></div>
+      </div>
+      <div id="fridgeRow2">
+        <div class="item" data-name="Canned Food">🥫<span class="tooltip">Canned Food</span></div>
+        <div class="item" data-name="Milk">🥛<span class="tooltip">Milk</span></div>
+        <div class="item" data-name="Juice">🧃<span class="tooltip">Juice</span></div>
+        <div class="item" data-name="Cheese">🧀<span class="tooltip">Cheese</span></div>
+      </div>
+      <div id="fridgeRow3">
+        <div class="item" data-name="Broccoli">🥦<span class="tooltip">Broccoli</span></div>
+        <div class="item" data-name="Onion">🧅<span class="tooltip">Onion</span></div>
+        <div class="item" data-name="Garlic">🧄<span class="tooltip">Garlic</span></div>
+        <div class="item" data-name="Chili">🌶<span class="tooltip">Chili</span></div>
+      </div>
+    </div>
   </div>
 
-  <div class="inventory">
-    <h2>Inventory</h2>
-    <ul class="inventory-list" id="inventoryList"></ul>
-    <button class="clear-button" onclick="clearInventory()">Clear Inventory</button>
+  <!-- Recipe Book Icon -->
+  <img id="recipeBookIcon" src="../Images/recipeBook.gif" alt="Recipe Book" title="Open Recipe Book" />
+
+  <!-- Recipe Book Modal -->
+  <div id="recipeBookModal">
+    <div id="recipeBookClose">✖</div>
+    <h2>Recipe Book</h2>
+    <ul id="recipeList"></ul>
   </div>
 
-  <audio id="sound-open" src="Sounds/fridgeOpen.mp3"></audio>
-  <audio id="sound-close" src="Sounds/fridgeClose.mp3"></audio>
-  <audio id="sound-move" src="Sounds/moveItem.mp3"></audio>
-  <audio id="sound-clear" src="Sounds/clearInventory.mp3"></audio>
+  <audio id="fridgeOpenSound" src="../Sounds/fridgeOpen.mp3" preload="auto"></audio>
+  <audio id="fridgeCloseSound" src="../Sounds/fridgeClose.mp3" preload="auto"></audio>
+  <audio id="fridgeHum" src="../Sounds/fridgeHum.mp3" preload="auto" loop></audio>
+  <audio id="inventoryToggle" src="../Sounds/inventoryToggle.mp3" preload="auto"></audio>
+  <audio id="itemClick" src="../Sounds/itemClick.mp3" preload="auto"></audio>
 
   <script>
-    const fridgeDoor = document.getElementById('fridgeDoor');
-    const fridgeBody = document.getElementById('fridgeBody');
-    const inventoryList = document.getElementById('inventoryList');
+    const fridgeClosed = document.getElementById('fridgeClosed');
+    const fridgeOpen = document.getElementById('fridgeOpen');
+    const freezerItems = document.getElementById('freezerItems');
+    const fridgeItems = document.getElementById('fridgeItems');
+    const fridgeOpenSound = document.getElementById('fridgeOpenSound');
+    const fridgeCloseSound = document.getElementById('fridgeCloseSound');
+    const fridgeHum = document.getElementById('fridgeHum');
+    const inventory = document.getElementById('inventory');
+    const inventoryToggle = document.getElementById('inventoryToggle');
+    const inventoryButton = document.getElementById('inventoryButton');
+    const itemClick = document.getElementById('itemClick');
 
-    const soundOpen = document.getElementById('sound-open');
-    const soundClose = document.getElementById('sound-close');
-    const soundMove = document.getElementById('sound-move');
-    const soundClear = document.getElementById('sound-clear');
+    const recipeBookIcon = document.getElementById('recipeBookIcon');
+    const recipeBookModal = document.getElementById('recipeBookModal');
+    const recipeBookClose = document.getElementById('recipeBookClose');
+    const recipeList = document.getElementById('recipeList');
 
-    const allItems = [
-      { name: 'Lettuce', emoji: '🥬' },
-      { name: 'Tomato', emoji: '🍅' },
-      { name: 'Milk', emoji: '🥛' },
-      { name: 'Cheese', emoji: '🧀' },
-      { name: 'Carrot', emoji: '🥕' },
-      { name: 'Egg', emoji: '🥚' },
+    let fridgeIsOpen = false;
+
+    fridgeHum.volume = 0.03;
+    fridgeHum.play().catch(() => {});
+
+    fridgeClosed.addEventListener('click', () => {
+      fridgeClosed.style.visibility = 'hidden';
+      fridgeOpen.style.visibility = 'visible';
+      freezerItems.style.visibility = 'visible';
+      fridgeItems.style.visibility = 'visible';
+      fridgeIsOpen = true;
+      fridgeOpenSound.play();
+      fridgeHum.volume = 0.07;
+      if (fridgeHum.paused) fridgeHum.play();
+    });
+
+    fridgeOpen.addEventListener('click', (e) => {
+      const leftClickThreshold = fridgeOpen.width * 0.5;
+      const clickX = e.offsetX;
+      if (clickX > leftClickThreshold) {
+        fridgeOpen.style.visibility = 'hidden';
+        fridgeClosed.style.visibility = 'visible';
+        freezerItems.style.visibility = 'hidden';
+        fridgeItems.style.visibility = 'hidden';
+        fridgeIsOpen = false;
+        fridgeCloseSound.play();
+        fridgeHum.volume = 0.03;
+      }
+    });
+
+    inventoryButton.addEventListener('click', () => {
+      const visible = inventory.style.display === 'flex';
+      inventory.style.display = visible ? 'none' : 'flex';
+      inventoryToggle.play();
+    });
+
+    function addItemToInventory(item) {
+      const itemName = item.dataset.name;
+      const clone = item.cloneNode(true);
+      clone.style.margin = '2px';
+      clone.classList.remove('hidden');
+
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'closeBtn';
+      closeBtn.textContent = '❌';
+      clone.appendChild(closeBtn);
+
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        clone.remove();
+      });
+
+      inventory.appendChild(clone);
+
+      if (inventory.style.display !== 'flex') {
+        inventory.style.display = 'flex';
+        inventoryToggle.play();
+      }
+    }
+
+    function setupItemClicks(container) {
+      container.querySelectorAll('.item').forEach(item => {
+        item.addEventListener('click', () => {
+          if (!fridgeIsOpen) return;
+          itemClick.play();
+          addItemToInventory(item);
+        });
+      });
+    }
+
+    setupItemClicks(document.getElementById('freezerRow1'));
+    setupItemClicks(document.getElementById('freezerRow2'));
+    setupItemClicks(document.getElementById('fridgeRow1'));
+    setupItemClicks(document.getElementById('fridgeRow2'));
+    setupItemClicks(document.getElementById('fridgeRow3'));
+
+    // Recipe data: simple real-life recipes
+    const recipes = [
+      {
+        name: "Cheese Sandwich",
+        ingredients: ["Cheese", "Bread"],
+        instructions: "Put cheese between two slices of bread and enjoy."
+      },
+      {
+        name: "Tomato Salad",
+        ingredients: ["Tomato", "Lettuce", "Onion"],
+        instructions: "Chop tomato, lettuce, and onion. Mix and serve."
+      },
+      {
+        name: "Carrot & Cucumber Sticks",
+        ingredients: ["Carrot", "Cucumber"],
+        instructions: "Slice carrot and cucumber into sticks. Serve raw."
+      },
+      {
+        name: "Garlic Broccoli",
+        ingredients: ["Broccoli", "Garlic"],
+        instructions: "Steam broccoli and sauté with garlic."
+      },
+      {
+        name: "Fruit Bowl",
+        ingredients: ["Berries"],
+        instructions: "Put berries in a bowl and enjoy."
+      },
+      {
+        name: "Milk & Juice Drink",
+        ingredients: ["Milk", "Juice"],
+        instructions: "Mix milk and juice to taste."
+      }
     ];
 
-    let inventory = JSON.parse(localStorage.getItem('fridgeInventory')) || [];
-    let fridgeItems = allItems.filter(i => !inventory.includes(i.name));
+    // We add "Bread" as a special ingredient which is not in fridge — so recipe that requires bread won't show as makeable if bread is missing.
 
-    function toggleDoor() {
-      fridgeDoor.classList.toggle('door-open');
-      if (fridgeDoor.classList.contains('door-open')) {
-        soundOpen.play();
-      } else {
-        soundClose.play();
-      }
-    }
-
-    function renderFridge() {
-      fridgeBody.innerHTML = '';
-      fridgeItems.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.textContent = item.emoji;
-        div.onclick = () => moveToInventory(item.name);
-        fridgeBody.appendChild(div);
+    // Helper: get inventory item names (unique)
+    function getInventoryItems() {
+      const items = [];
+      inventory.querySelectorAll('.item').forEach(item => {
+        items.push(item.dataset.name);
       });
+      // unique:
+      return [...new Set(items)];
     }
 
-    function renderInventory() {
-      inventoryList.innerHTML = '';
-      inventory.forEach(name => {
-        const item = allItems.find(i => i.name === name);
+    // Determine if recipe can be made with current inventory
+    function canMakeRecipe(recipe, inventoryItems) {
+      return recipe.ingredients.every(ing => inventoryItems.includes(ing));
+    }
+
+    // Render recipes in modal
+    function renderRecipes() {
+      const invItems = getInventoryItems();
+      // Sort recipes: those that can be made first
+      const sortedRecipes = recipes.slice().sort((a, b) => {
+        const aCan = canMakeRecipe(a, invItems);
+        const bCan = canMakeRecipe(b, invItems);
+        if (aCan && !bCan) return -1;
+        if (!aCan && bCan) return 1;
+        return a.name.localeCompare(b.name);
+      });
+
+      recipeList.innerHTML = ''; // clear
+
+      sortedRecipes.forEach(recipe => {
         const li = document.createElement('li');
-        li.innerHTML = `${item.emoji} ${item.name} <span class="remove-btn" onclick="moveToFridge('${item.name}')">❌</span>`;
-        inventoryList.appendChild(li);
+        const canMake = canMakeRecipe(recipe, invItems);
+
+        li.innerHTML = `<strong>${recipe.name}</strong> ${canMake ? '✅' : '❌'}<br>
+                        <em>Ingredients:</em> ${recipe.ingredients.join(', ')}<br>
+                        <em>Instructions:</em> ${recipe.instructions}`;
+        recipeList.appendChild(li);
       });
     }
 
-    function moveToInventory(name) {
-      if (!inventory.includes(name)) {
-        inventory.push(name);
-        fridgeItems = fridgeItems.filter(i => i.name !== name);
-        saveInventory();
-        soundMove.play();
-        renderFridge();
-        renderInventory();
+    recipeBookIcon.addEventListener('click', () => {
+      renderRecipes();
+      recipeBookModal.style.display = 'block';
+    });
+
+    recipeBookClose.addEventListener('click', () => {
+      recipeBookModal.style.display = 'none';
+    });
+
+    // Close modal if clicked outside content
+    recipeBookModal.addEventListener('click', (e) => {
+      if (e.target === recipeBookModal) {
+        recipeBookModal.style.display = 'none';
       }
-    }
+    });
 
-    function moveToFridge(name) {
-      inventory = inventory.filter(i => i !== name);
-      const item = allItems.find(i => i.name === name);
-      fridgeItems.push(item);
-      saveInventory();
-      soundMove.play();
-      renderFridge();
-      renderInventory();
-    }
-
-    function clearInventory() {
-      inventory = [];
-      fridgeItems = [...allItems];
-      saveInventory();
-      soundClear.play();
-      renderFridge();
-      renderInventory();
-    }
-
-    function saveInventory() {
-      localStorage.setItem('fridgeInventory', JSON.stringify(inventory));
-    }
-
-    renderFridge();
-    renderInventory();
   </script>
+
 </body>
 </html>

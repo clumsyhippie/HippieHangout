@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Living Room</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+    }
+
+    .room {
+      background-image: url('../images/living.gif');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .nav-arrow {
+      transition: all 0.3s;
+      background-color: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(5px);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-arrow:hover {
+      transform: scale(1.1);
+      background-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 4px 20px rgba(255, 165, 0, 0.4);
+      border-color: rgba(255, 165, 0, 0.8);
+    }
+  </style>
+</head>
+<body>
+  <!-- Entry & Ambient Sounds -->
+  <audio id="entry-sound" src="../Sounds/living.mp4" preload="auto"></audio>
+  <audio id="ambient-sound" src="../Sounds/ambLiving.mp3" preload="auto" loop></audio>
+
+  <!-- Room Background -->
+  <div class="room"></div>
+
+  <!-- Navigation Arrows -->
+  <div class="absolute left-6 top-1/2 transform -translate-y-1/2 z-50">
+    <a href="../index.html" class="nav-arrow text-white p-4 rounded-full flex items-center justify-center">
+      <i class="fas fa-chevron-left text-2xl"></i>
+    </a>
+  </div>
+
+  <div class="absolute right-6 top-1/2 transform -translate-y-1/2 z-50">
+    <a href="kitchen.html" class="nav-arrow text-white p-4 rounded-full flex items-center justify-center">
+      <i class="fas fa-chevron-right text-2xl"></i>
+    </a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const entrySound = document.getElementById('entry-sound');
+      const ambientSound = document.getElementById('ambient-sound');
+
+      try {
+        entrySound.play().catch(() => {});
+        ambientSound.volume = 0.7;
+        ambientSound.play().catch((e) => {
+          console.warn("Autoplay blocked:", e);
+        });
+      } catch (err) {
+        console.log("Audio play failed:", err);
+      }
+    });
+  </script>
+</body>
+</html>
