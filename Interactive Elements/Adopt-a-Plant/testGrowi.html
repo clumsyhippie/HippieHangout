@@ -1,0 +1,353 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GROWI Popup Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #333;
+        }
+        
+        button {
+            background-color: #52b788;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #2d6a4f;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+        
+        button:hover {
+            background-color: #40916c;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #2d6a4f;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 4px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: #52b788;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            color: #d62828;
+            background-color: #f9e7e7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .path-test-results {
+            margin-top: 20px;
+            text-align: left;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        
+        .success {
+            color: #2d6a4f;
+        }
+        
+        .failure {
+            color: #d62828;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GROWI Popup Test</h1>
+        <p>Click the button below to test the GROWI popup:</p>
+        <button id="open-growi">Open GROWI</button>
+        <button id="test-path">Test File Path</button>
+        
+        <div id="path-test-results" class="path-test-results" style="display: none;">
+            <h3>Path Test Results:</h3>
+            <div id="test-output"></div>
+        </div>
+    </div>
+    
+    <script>
+        // IMPORTANT: Set the path to your GROWI HTML file here
+        // Try different paths until one works
+        
+        // Option 1: Original path
+        const growiPath = '../../Interactive Element/Adopt-a-Plant/growi.html';
+        
+        // Option 2: Try without the folder structure
+        // const growiPath = 'growi.html';
+        
+        // Option 3: Try with a different folder structure
+        // const growiPath = 'Adopt-a-Plant/growi.html';
+        
+        // Option 4: Try with a different folder structure
+        // const growiPath = './Interactive Element/Adopt-a-Plant/growi.html';
+        
+        // Function to test if the file exists
+        async function testFilePath() {
+            const testOutput = document.getElementById('test-output');
+            const pathTestResults = document.getElementById('path-test-results');
+            pathTestResults.style.display = 'block';
+            
+            testOutput.innerHTML = `<p>Testing path: <code>${growiPath}</code></p><div class="loading"></div>`;
+            
+            try {
+                const response = await fetch(growiPath);
+                
+                if (response.ok) {
+                    testOutput.innerHTML = `
+                        <p class="success">✅ Success! The file was found at: <code>${growiPath}</code></p>
+                        <p>Status: ${response.status}</p>
+                        <p>If the popup still doesn't show content, there might be other issues like CORS restrictions.</p>
+                    `;
+                } else {
+                    testOutput.innerHTML = `
+                        <p class="failure">❌ File not found at: <code>${growiPath}</code></p>
+                        <p>Status: ${response.status} ${response.statusText}</p>
+                        <p>Try uncommenting a different path option in the code.</p>
+                    `;
+                }
+            } catch (error) {
+                testOutput.innerHTML = `
+                    <p class="failure">❌ Error testing path: <code>${growiPath}</code></p>
+                    <p>Error: ${error.message}</p>
+                    <p>This could be due to CORS restrictions or the file not existing at this location.</p>
+                    <p>Try uncommenting a different path option in the code.</p>
+                `;
+            }
+        }
+        
+        // Function to create and show the GROWI popup
+        function showGrowiPopup() {
+            console.log("Showing GROWI popup..."); // Debug log
+            
+            // Create overlay div
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            overlay.style.zIndex = '9999';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            
+            // Create container for iframe
+            const container = document.createElement('div');
+            container.style.position = 'relative';
+            container.style.width = '90%';
+            container.style.maxWidth = '800px';
+            container.style.height = '90%';
+            container.style.maxHeight = '600px';
+            container.style.backgroundColor = 'white';
+            container.style.borderRadius = '10px';
+            container.style.overflow = 'hidden';
+            
+            // Create loading indicator
+            const loadingContainer = document.createElement('div');
+            loadingContainer.style.position = 'absolute';
+            loadingContainer.style.top = '0';
+            loadingContainer.style.left = '0';
+            loadingContainer.style.width = '100%';
+            loadingContainer.style.height = '100%';
+            loadingContainer.style.display = 'flex';
+            loadingContainer.style.flexDirection = 'column';
+            loadingContainer.style.justifyContent = 'center';
+            loadingContainer.style.alignItems = 'center';
+            loadingContainer.style.backgroundColor = 'white';
+            loadingContainer.style.zIndex = '5';
+            
+            const loadingSpinner = document.createElement('div');
+            loadingSpinner.className = 'loading';
+            
+            const loadingText = document.createElement('p');
+            loadingText.textContent = 'Loading GROWI...';
+            loadingText.style.marginTop = '20px';
+            loadingText.style.color = '#2d6a4f';
+            
+            loadingContainer.appendChild(loadingSpinner);
+            loadingContainer.appendChild(loadingText);
+            
+            // Create close button
+            const closeBtn = document.createElement('div');
+            closeBtn.innerHTML = '✕';
+            closeBtn.style.position = 'absolute';
+            closeBtn.style.top = '10px';
+            closeBtn.style.right = '10px';
+            closeBtn.style.width = '30px';
+            closeBtn.style.height = '30px';
+            closeBtn.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            closeBtn.style.color = 'white';
+            closeBtn.style.borderRadius = '50%';
+            closeBtn.style.display = 'flex';
+            closeBtn.style.justifyContent = 'center';
+            closeBtn.style.alignItems = 'center';
+            closeBtn.style.cursor = 'pointer';
+            closeBtn.style.fontSize = '18px';
+            closeBtn.style.zIndex = '10';
+            
+            // Create iframe
+            const iframe = document.createElement('iframe');
+            iframe.src = growiPath;
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.border = 'none';
+            iframe.style.opacity = '0'; // Start hidden until loaded
+            iframe.style.transition = 'opacity 0.3s';
+            
+            // Add event listener to close button
+            closeBtn.addEventListener('click', function() {
+                document.body.removeChild(overlay);
+                document.body.style.overflow = 'auto'; // Re-enable scrolling
+                console.log("Popup closed via button"); // Debug log
+            });
+            
+            // Add event listener to close when clicking outside
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) {
+                    document.body.removeChild(overlay);
+                    document.body.style.overflow = 'auto'; // Re-enable scrolling
+                    console.log("Popup closed via outside click"); // Debug log
+                }
+            });
+            
+            // Add load event handler for iframe
+            iframe.onload = function() {
+                console.log("Iframe loaded successfully"); // Debug log
+                
+                // Check if we can access the iframe content
+                try {
+                    // This will throw an error if the iframe is empty or from a different origin
+                    const iframeContent = iframe.contentWindow.document.body;
+                    
+                    // If we get here, the iframe loaded successfully
+                    loadingContainer.style.display = 'none';
+                    iframe.style.opacity = '1';
+                } catch (error) {
+                    console.error("Error accessing iframe content:", error);
+                    
+                    // Show error message
+                    loadingSpinner.style.display = 'none';
+                    loadingText.innerHTML = `
+                        <div class="error-message">
+                            <strong>Error loading GROWI content</strong>
+                            <p>The file was found but couldn't be displayed. This could be due to:</p>
+                            <ul>
+                                <li>CORS restrictions</li>
+                                <li>The file is not valid HTML</li>
+                                <li>The file is empty</li>
+                            </ul>
+                            <p>Try testing the file path with the "Test File Path" button.</p>
+                        </div>
+                    `;
+                }
+            };
+            
+            // Add error event handler for iframe
+            iframe.onerror = function() {
+                console.error("Error loading iframe"); // Debug log
+                
+                // Show error message
+                loadingSpinner.style.display = 'none';
+                loadingText.innerHTML = `
+                    <div class="error-message">
+                        <strong>Error loading GROWI content</strong>
+                        <p>Could not load the file from: <code>${growiPath}</code></p>
+                        <p>Please check if the file exists at this location.</p>
+                        <p>Try testing the file path with the "Test File Path" button.</p>
+                    </div>
+                `;
+            };
+            
+            // Assemble the elements
+            container.appendChild(iframe);
+            container.appendChild(loadingContainer);
+            container.appendChild(closeBtn);
+            overlay.appendChild(container);
+            
+            // Add to body and disable scrolling
+            document.body.appendChild(overlay);
+            document.body.style.overflow = 'hidden'; // Prevent scrolling behind popup
+            
+            // Set a timeout to check if the iframe loaded
+            setTimeout(function() {
+                if (loadingContainer.style.display !== 'none') {
+                    // If still showing loading after 5 seconds, show an error
+                    fetch(growiPath)
+                        .then(response => {
+                            if (!response.ok) {
+                                loadingSpinner.style.display = 'none';
+                                loadingText.innerHTML = `
+                                    <div class="error-message">
+                                        <strong>Error loading GROWI content</strong>
+                                        <p>Could not load the file from: <code>${growiPath}</code></p>
+                                        <p>Status: ${response.status} ${response.statusText}</p>
+                                        <p>Try testing the file path with the "Test File Path" button.</p>
+                                    </div>
+                                `;
+                            }
+                        })
+                        .catch(error => {
+                            loadingSpinner.style.display = 'none';
+                            loadingText.innerHTML = `
+                                <div class="error-message">
+                                    <strong>Error loading GROWI content</strong>
+                                    <p>Could not load the file from: <code>${growiPath}</code></p>
+                                    <p>Error: ${error.message}</p>
+                                    <p>Try testing the file path with the "Test File Path" button.</p>
+                                </div>
+                            `;
+                        });
+                }
+            }, 5000);
+        }
+        
+        // Add event listeners to the buttons
+        document.getElementById('open-growi').addEventListener('click', function() {
+            console.log("Open button clicked"); // Debug log
+            showGrowiPopup();
+        });
+        
+        document.getElementById('test-path').addEventListener('click', function() {
+            console.log("Test path button clicked"); // Debug log
+            testFilePath();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94b0487326fd05dc',t:'MTc0OTEzMjkzNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
+
+</body></html>
