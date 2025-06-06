@@ -2364,7 +2364,7 @@
     </div>
 
     <script src="functions.js" type="text/javascript"></script>
-    <script>
+    <script defer>
         document.addEventListener('DOMContentLoaded', function() {
             // DOM Elements
             const openBtn = document.getElementById('openCustomizer');
@@ -2729,6 +2729,7 @@
             // Function to play pickup sound
             function playPickupSound() {
                 pickupSound.currentTime = 0;
+                console.log(pickupSound)
                 pickupSound.play().catch(e => console.log("Audio play failed:", e));
             }
             
