@@ -16,11 +16,12 @@
 
     #fridgeContainer {
       position: absolute;
-      left: -140px;
-      top: 270px;
+      left: 350px;
+      top: 350px;
       width: 700px;
       height: auto;
       z-index: 1;
+      transform: scale(0.65);
     }
 
     #fridgeOpen {
@@ -183,8 +184,8 @@
     #recipeBookIcon {
       position: absolute;
       bottom: 40px;
-      left: 40px;
-      width: 120px;
+      left: 300px;
+      width: 100px;
       height: auto;
       cursor: pointer;
       z-index: 8;
@@ -194,8 +195,8 @@
     #recipeBookModal {
       position: fixed;
       top: 50%;
-      left: 50%;
-      width: 600px;
+      left: 80%;
+      width: 1000px;
       max-height: 80vh;
       overflow-y: auto;
       background: #fff8e1;
@@ -396,6 +397,7 @@
     setupItemClicks(document.getElementById('fridgeRow1'));
     setupItemClicks(document.getElementById('fridgeRow2'));
     setupItemClicks(document.getElementById('fridgeRow3'));
+    
 
     // Recipe data: simple real-life recipes
     const recipes = [

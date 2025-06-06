@@ -11,23 +11,24 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Pacifico&amp;family=Poppins:wght@300;400;600&amp;display=swap">
     <style>
-        
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-        
-        html, body {
+
+        html,
+        body {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
             overflow: hidden;
             background-color: transparent;
+            cursor: grab !important;
         }
-        
+
         .avatar-customizer-container * {
             font-family: 'Press Start 2P', cursive;
             color: #f8e8b0;
         }
-        
+
         .avatar-customizer-container {
             position: fixed;
             top: 0;
@@ -37,22 +38,20 @@
             pointer-events: none;
             z-index: 9990;
         }
-        
-        .avatar-customizer-container button, 
-        .avatar-customizer-container .option-btn, 
-        .avatar-customizer-container .bg-nav-arrow, 
+
+        .avatar-customizer-container button,
+        .avatar-customizer-container .option-btn,
+        .avatar-customizer-container .bg-nav-arrow,
         .avatar-customizer-container .bg-dot,
-        .avatar-customizer-container .main-avatar,
         .avatar-customizer-container .chat-input,
         .avatar-customizer-container .chat-container,
         .avatar-customizer-container .chat-header,
         .avatar-customizer-container .chat-history-panel,
         .avatar-customizer-container .username-modal,
         .avatar-customizer-container .voice-controls {
-            cursor: pointer;
             pointer-events: auto;
         }
-        
+
         .popup-overlay {
             display: none;
             position: fixed;
@@ -66,7 +65,7 @@
             align-items: center;
             pointer-events: auto;
         }
-        
+
         .popup-content {
             background-color: rgba(139, 111, 78, 0.9);
             border-radius: 8px;
@@ -82,7 +81,7 @@
             overflow: hidden;
             margin: 5px;
         }
-        
+
         .fitting-room {
             position: relative;
             width: 100%;
@@ -94,7 +93,7 @@
             background-position: center;
             background-repeat: no-repeat;
         }
-        
+
         .avatar-stand {
             position: absolute;
             top: 50%;
@@ -106,13 +105,13 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .avatar-preview {
             position: relative;
             width: 600px;
             height: 600px;
         }
-        
+
         .avatar {
             position: fixed;
             width: 250px;
@@ -121,24 +120,31 @@
             touch-action: none;
             user-select: none;
             pointer-events: auto;
-            cursor: pointer !important;
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
         }
-        
+
         .avatar.dragging {
-            cursor: pointer !important;
             animation: pickup 0.3s forwards;
             filter: brightness(1.2);
+            cursor: grabbing !important;
         }
-        
+
         @keyframes pickup {
-            0% { transform: scale(1); }
-            50% { transform: scale(0.95); }
-            100% { transform: scale(1.05); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(0.95);
+            }
+
+            100% {
+                transform: scale(1.05);
+            }
         }
-        
+
         .avatar-layer {
             position: absolute;
             top: 0;
@@ -148,7 +154,7 @@
             object-fit: contain;
             pointer-events: none;
         }
-        
+
         .option-btn {
             transition: all 0.2s ease;
             border: 4px solid #f8e8b0;
@@ -161,18 +167,18 @@
             color: #f8e8b0;
             text-shadow: 1px 1px 0 #5a3e2b;
         }
-        
+
         .option-btn.active {
             background-color: #d4a76a;
             transform: translateY(-2px);
             box-shadow: 0 4px 0 #5a3e2b;
         }
-        
+
         .option-btn:hover:not(.active) {
             transform: translateY(-1px);
             box-shadow: 0 2px 0 #5a3e2b;
         }
-        
+
         .category-title {
             color: #f8e8b0;
             text-align: center;
@@ -180,14 +186,14 @@
             text-shadow: 2px 2px 0 #5a3e2b;
             font-size: 12px;
         }
-        
+
         .customizer-panel {
             background-color: #8b6f4e;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             border: 4px solid #f8e8b0;
         }
-        
+
         .main-button {
             background-color: #6b8e23;
             color: #f8e8b0;
@@ -198,17 +204,17 @@
             transition: all 0.2s ease;
             z-index: 9991;
         }
-        
+
         .main-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 0 #5a3e2b;
         }
-        
+
         .main-button:active {
             transform: translateY(0);
             box-shadow: 0 2px 0 #5a3e2b;
         }
-        
+
         .save-button-container {
             position: absolute;
             top: 10px;
@@ -218,7 +224,7 @@
             justify-content: center;
             z-index: 9996;
         }
-        
+
         .controls-section {
             width: 350px;
             padding: 10px;
@@ -226,50 +232,62 @@
             flex-direction: column;
             height: 100%;
         }
-        
+
         .controls-content {
             flex: 1;
             overflow-y: auto;
             padding-right: 5px;
         }
-        
+
         /* Button color styles */
         .btn-default {
             background-color: #f0d9b5;
             color: #5a3e2b;
         }
-        
+
         .btn-blue {
             background-color: #a4c2f4;
             color: #2c3e50;
         }
-        
+
+        .btn-green {
+            background-color: #7fb969;
+            color: #214325;
+        }
+
+        .btn-orange {
+            background-color: #de9c40;
+            color: #5a462d;
+        }
+
+        .btn-pink {
+            background-color: #f480ba;
+            color: #60264c;
+        }
+
+        .btn-red {
+            background-color: #d76666;
+            color: #522424;
+        }
+
+        .btn-yellow {
+            background-color: #fff266;
+            color: #2c3e50;
+        }
+
         .btn-purple {
-            background-color: #d5a6bd;
+            background-color: #b87bf0;
             color: #4a235a;
         }
-        
+
         .btn-none {
             background-color: #a67c52;
         }
-        
+
         .btn-black {
             background-color: #333333;
         }
-        
-        .btn-green {
-            background-color: #6b8e23;
-        }
-        
-        .btn-pink {
-            background-color: #ff69b4;
-            color: #4a235a;
-        }
-        
-        .btn-red {
-            background-color: #e74c3c;
-        }
-        
+
         /* Background navigation arrows */
         .bg-nav-arrow {
             position: absolute;
@@ -286,26 +304,26 @@
             z-index: 9996;
             transition: all 0.2s ease;
         }
-        
+
         .bg-nav-arrow:hover {
             background-color: rgba(248, 232, 176, 0.9);
             transform: translateY(-50%) scale(1.1);
         }
-        
+
         .bg-nav-arrow.left {
             left: 5px;
         }
-        
+
         .bg-nav-arrow.right {
             right: 5px;
         }
-        
+
         .bg-nav-arrow svg {
             width: 20px;
             height: 20px;
             fill: #5a3e2b;
         }
-        
+
         /* Background indicator dots */
         .bg-indicator {
             position: absolute;
@@ -316,7 +334,7 @@
             gap: 10px;
             z-index: 9996;
         }
-        
+
         .bg-dot {
             width: 15px;
             height: 15px;
@@ -325,32 +343,32 @@
             border-radius: 50%;
             transition: all 0.2s ease;
         }
-        
+
         .bg-dot.active {
             background-color: #f8e8b0;
             transform: scale(1.2);
         }
-        
+
         /* Custom scrollbar */
         .controls-content::-webkit-scrollbar {
             width: 10px;
         }
-        
+
         .controls-content::-webkit-scrollbar-track {
             background: rgba(90, 62, 43, 0.3);
             border-radius: 5px;
         }
-        
+
         .controls-content::-webkit-scrollbar-thumb {
             background: #f8e8b0;
             border-radius: 5px;
             border: 2px solid #5a3e2b;
         }
-        
+
         .controls-content::-webkit-scrollbar-thumb:hover {
             background: #f0d9b5;
         }
-        
+
         #openCustomizer {
             position: fixed;
             top: 10px;
@@ -358,7 +376,7 @@
             z-index: 9991;
             pointer-events: auto;
         }
-        
+
         /* Chat container styles */
         .chat-container {
             position: fixed;
@@ -373,7 +391,7 @@
             pointer-events: auto;
             transition: height 0.3s ease;
         }
-        
+
         .chat-header {
             display: flex;
             justify-content: space-between;
@@ -382,12 +400,12 @@
             font-size: 12px;
             cursor: pointer;
         }
-        
+
         .chat-controls {
             display: flex;
             gap: 5px;
         }
-        
+
         .chat-input {
             width: 100%;
             background-color: rgba(248, 232, 176, 0.3);
@@ -398,16 +416,16 @@
             font-size: 10px;
             margin-top: 5px;
         }
-        
+
         .chat-input::placeholder {
             color: rgba(248, 232, 176, 0.7);
         }
-        
+
         .chat-input:focus {
             outline: none;
             background-color: rgba(248, 232, 176, 0.4);
         }
-        
+
         .chat-send-btn {
             background-color: #6b8e23;
             border: 2px solid #f8e8b0;
@@ -417,12 +435,12 @@
             margin-top: 5px;
             transition: all 0.2s ease;
         }
-        
+
         .chat-send-btn:hover {
             background-color: #7ba32c;
             transform: translateY(-1px);
         }
-        
+
         /* Speech bubble styles */
         .speech-bubble {
             position: absolute;
@@ -438,7 +456,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             pointer-events: none;
         }
-        
+
         .speech-bubble::after {
             content: '';
             position: absolute;
@@ -449,17 +467,31 @@
             border-style: solid;
             border-color: #5a3e2b transparent transparent transparent;
         }
-        
+
         @keyframes bubble-appear {
-            0% { opacity: 0; transform: translateY(20px) scale(0.8); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.8);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
-        
+
         @keyframes bubble-disappear {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-20px) scale(0.8); }
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.8);
+            }
         }
-        
+
         /* Chat history panel */
         .chat-history-panel {
             position: fixed;
@@ -475,7 +507,7 @@
             display: none;
             flex-direction: column;
         }
-        
+
         .chat-history-header {
             display: flex;
             justify-content: space-between;
@@ -483,7 +515,7 @@
             margin-bottom: 10px;
             font-size: 12px;
         }
-        
+
         .chat-history-content {
             flex: 1;
             overflow-y: auto;
@@ -491,7 +523,7 @@
             background-color: rgba(248, 232, 176, 0.2);
             border-radius: 4px;
         }
-        
+
         .chat-message {
             margin-bottom: 10px;
             padding: 8px;
@@ -500,17 +532,17 @@
             font-size: 10px;
             word-break: break-word;
         }
-        
+
         .chat-message .username {
             font-weight: bold;
             color: #f8e8b0;
             margin-bottom: 4px;
         }
-        
+
         .chat-message .message-text {
             color: #f8e8b0;
         }
-        
+
         /* Username modal */
         .username-modal {
             position: fixed;
@@ -524,7 +556,7 @@
             align-items: center;
             z-index: 10000;
         }
-        
+
         .username-modal-content {
             background-color: #8b6f4e;
             border: 4px solid #f8e8b0;
@@ -534,13 +566,13 @@
             max-width: 400px;
             text-align: center;
         }
-        
+
         .username-modal-title {
             font-size: 16px;
             margin-bottom: 20px;
             color: #f8e8b0;
         }
-        
+
         .username-input {
             width: 100%;
             background-color: rgba(248, 232, 176, 0.3);
@@ -551,16 +583,16 @@
             font-size: 12px;
             margin-bottom: 20px;
         }
-        
+
         .username-input::placeholder {
             color: rgba(248, 232, 176, 0.7);
         }
-        
+
         .username-input:focus {
             outline: none;
             background-color: rgba(248, 232, 176, 0.4);
         }
-        
+
         .username-submit {
             background-color: #6b8e23;
             border: 3px solid #f8e8b0;
@@ -571,12 +603,12 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        
+
         .username-submit:hover {
             background-color: #7ba32c;
             transform: translateY(-2px);
         }
-        
+
         /* Voice chat controls */
         .voice-controls {
             display: flex;
@@ -584,7 +616,7 @@
             gap: 10px;
             margin-top: 10px;
         }
-        
+
         .mic-button {
             background-color: #a67c52;
             border: 2px solid #f8e8b0;
@@ -597,22 +629,22 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        
+
         .mic-button:hover {
             background-color: #b68c62;
         }
-        
+
         .mic-button.active {
             background-color: #e74c3c;
         }
-        
+
         .voice-indicator {
             display: flex;
             align-items: center;
             gap: 2px;
             height: 20px;
         }
-        
+
         .voice-bar {
             width: 3px;
             height: 5px;
@@ -620,23 +652,45 @@
             border-radius: 1px;
             transition: height 0.1s ease;
         }
-        
+
         @keyframes voiceAnimation {
-            0% { height: 5px; }
-            50% { height: 15px; }
-            100% { height: 5px; }
+            0% {
+                height: 5px;
+            }
+
+            50% {
+                height: 15px;
+            }
+
+            100% {
+                height: 5px;
+            }
         }
-        
+
         .speaking .voice-bar {
             animation: voiceAnimation 0.5s infinite;
         }
-        
-        .speaking .voice-bar:nth-child(1) { animation-delay: 0.0s; }
-        .speaking .voice-bar:nth-child(2) { animation-delay: 0.1s; }
-        .speaking .voice-bar:nth-child(3) { animation-delay: 0.2s; }
-        .speaking .voice-bar:nth-child(4) { animation-delay: 0.3s; }
-        .speaking .voice-bar:nth-child(5) { animation-delay: 0.4s; }
-        
+
+        .speaking .voice-bar:nth-child(1) {
+            animation-delay: 0.0s;
+        }
+
+        .speaking .voice-bar:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .speaking .voice-bar:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .speaking .voice-bar:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .speaking .voice-bar:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
         /* User label */
         .user-label {
             position: absolute;
@@ -652,13 +706,13 @@
             white-space: nowrap;
             pointer-events: none;
         }
-        
+
         /* Other users' avatars */
         .other-user {
             opacity: 0.8;
             pointer-events: none;
         }
-        
+
         .other-user .user-label {
             background-color: rgba(107, 142, 35, 0.8);
         }
@@ -1995,25 +2049,28 @@
         <div id="usernameModal" class="username-modal" style="display: none;">
             <div class="username-modal-content">
                 <h2 class="username-modal-title">ENTER YOUR USERNAME</h2>
-                <input type="text" id="usernameInput" class="username-input" placeholder="Your username..." maxlength="15">
+                <input type="text" id="usernameInput" class="username-input" placeholder="Your username..."
+                    maxlength="15">
                 <button id="usernameSubmit" class="username-submit" style="cursor: pointer;">JOIN CHAT</button>
             </div>
         </div>
-        
+
         <!-- Main Avatar Display (always visible and draggable) -->
-         
-        <div id="mainAvatar" class="avatar pointer-events-auto" style="bottom: -360px; left: 50%; transform: translateX(-50%); top: auto; cursor: pointer;">
+
+        <div id="mainAvatar" class="avatar pointer-events-auto"
+            style="bottom: -360px; left: 50%; transform: translateX(-50%); top: auto;">
             <img id="mainBodyLayer" class="avatar-layer" src="Avatar/Images/Default.png" alt="Body">
             <img id="mainHairLayer" class="avatar-layer" src="" alt="Hair" style="display: none;">
-            <img id="mainEyesLayer" class="avatar-layer" src="Avatar/Images/Eyes.png" alt="Eyes" style="display: block;">
+            <img id="mainEyesLayer" class="avatar-layer" src="Avatar/Images/Eyes.png" alt="Eyes"
+                style="display: block;">
             <div id="userLabel" class="user-label">clumsy_hippie</div>
         </div>
-        
+
         <!-- Button to open the popup (at the top right) -->
-        <button id="openCustomizer" class="main-button" style="cursor: pointer;">
+        <button id="openCustomizer" class="main-button">
             CUSTOMIZE AVATAR
         </button>
-        
+
         <!-- Chat Container -->
         <div class="chat-container">
             <div id="chatHeader" class="chat-header">
@@ -2027,12 +2084,14 @@
             <div class="flex justify-end">
                 <button id="sendChat" class="chat-send-btn" style="cursor: pointer;">SEND</button>
             </div>
-            
+
             <!-- Voice Chat Controls -->
             <div class="voice-controls">
                 <div id="micButton" class="mic-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#f8e8b0" viewBox="0 0 16 16">
-                        <path d="M8 1a2 2 0 0 1 2 2v4a2 2 0 1 1-4 0V3a2 2 0 0 1 2-2zm6 6a.5.5 0 0 1 .5.5v1a6.5 6.5 0 0 1-13 0v-1a.5.5 0 0 1 1 0v1a5.5 5.5 0 0 0 11 0v-1a.5.5 0 0 1 .5-.5z"></path>
+                        <path
+                            d="M8 1a2 2 0 0 1 2 2v4a2 2 0 1 1-4 0V3a2 2 0 0 1 2-2zm6 6a.5.5 0 0 1 .5.5v1a6.5 6.5 0 0 1-13 0v-1a.5.5 0 0 1 1 0v1a5.5 5.5 0 0 0 11 0v-1a.5.5 0 0 1 .5-.5z">
+                        </path>
                         <path d="M8 0a3 3 0 0 0-3 3v4a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3z"></path>
                     </svg>
                 </div>
@@ -2045,9 +2104,9 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Chat History Panel -->
-        <div id="chatHistoryPanel" class="chat-history-panel">
+        <div id="chatHistoryPanel" class="chat-history-panel" style="display: none;">
             <div class="chat-history-header">
                 <span>CHAT HISTORY</span>
                 <button id="closeHistory" class="text-xs" style="cursor: pointer;">X</button>
@@ -2056,25 +2115,26 @@
                 <!-- Chat messages will be added here -->
             </div>
         </div>
-        
+
         <!-- Audio elements -->
-        <audio id="buttonSound" src="Avatar/Sounds/button.mp3" preload="auto"></audio>
-        <audio id="pickupSound" src="Avatar/Sounds/pickup.mp3" preload="auto"></audio>
-        <audio id="putdownSound" src="Avatar/Sounds/putdown.mp3" preload="auto"></audio>
+        <audio id="buttonSound" src="Avatar/Sounds/Button.mp3" preload="auto"></audio>
+        <audio id="pickupSound" src="Avatar/Sounds/Pickup.mp3" preload="auto"></audio>
+        <audio id="putdownSound" src="Avatar/Sounds/Putdown.mp3" preload="auto"></audio>
         <audio id="chatSound" src="Avatar/Sounds/chat.mp3" preload="auto"></audio>
-        
+
         <!-- Popup Overlay -->
         <div id="customizer" class="popup-overlay">
             <div class="popup-content">
                 <!-- Left side - Avatar Preview -->
-                <div id="fittingRoom" class="fitting-room" style="flex: 1; background-image: url('Avatar/Images/Background1.png');">
+                <div id="fittingRoom" class="fitting-room"
+                    style="flex: 1; background-image: url('Avatar/Images/Background1.png');">
                     <!-- Save Button at top center of preview -->
                     <div class="save-button-container">
                         <button id="saveAvatar" class="main-button" data-sound="play" style="cursor: pointer;">
                             SAVE AVATAR
                         </button>
                     </div>
-                    
+
                     <!-- Background navigation arrows -->
                     <div class="bg-nav-arrow left" id="prevBg" data-sound="play" style="cursor: pointer;">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -2086,30 +2146,40 @@
                             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
                         </svg>
                     </div>
-                    
+
                     <!-- Background indicator dots -->
-                    <div class="bg-indicator" id="bgIndicator"><div class="bg-dot active" data-index="0" style="cursor: pointer;"></div><div class="bg-dot " data-index="1" style="cursor: pointer;"></div><div class="bg-dot " data-index="2" style="cursor: pointer;"></div><div class="bg-dot " data-index="3" style="cursor: pointer;"></div><div class="bg-dot " data-index="4" style="cursor: pointer;"></div></div>
-                    
+                    <div class="bg-indicator" id="bgIndicator">
+                        <div class="bg-dot active" data-index="0" style="cursor: pointer;"></div>
+                        <div class="bg-dot " data-index="1" style="cursor: pointer;"></div>
+                        <div class="bg-dot " data-index="2" style="cursor: pointer;"></div>
+                        <div class="bg-dot " data-index="3" style="cursor: pointer;"></div>
+                        <div class="bg-dot " data-index="4" style="cursor: pointer;"></div>
+                    </div>
+
                     <!-- Avatar Stand -->
                     <div class="avatar-stand">
                         <div class="avatar-preview">
                             <img id="bodyLayer" class="avatar-layer" src="Avatar/Images/Default.png" alt="Body">
                             <img id="hairLayer" class="avatar-layer" src="" alt="Hair" style="display: none;">
-                            <img id="eyesLayer" class="avatar-layer" src="Avatar/Images/Eyes.png" alt="Eyes" style="display: block;">
+                            <img id="eyesLayer" class="avatar-layer" src="Avatar/Images/Eyes.png" alt="Eyes"
+                                style="display: block;">
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Right side - Controls -->
                 <div class="controls-section">
                     <div class="flex justify-end mb-2">
-                        <button id="closeCustomizer" class="text-f8e8b0 hover:text-white focus:outline-none" style="cursor: pointer;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <button id="closeCustomizer" class="text-f8e8b0 hover:text-white focus:outline-none"
+                            style="cursor: pointer;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                         </button>
                     </div>
-                    
+
                     <!-- Scrollable content area -->
                     <div class="controls-content">
                         <!-- Customization Options -->
@@ -2118,57 +2188,92 @@
                             <div class="customizer-panel p-2">
                                 <h3 class="category-title mb-2">BODY COLOR</h3>
                                 <div class="grid grid-cols-1 gap-2">
-                                    <button class="option-btn active rounded-lg btn-default" data-body="Default" data-sound="play" style="cursor: pointer;">
+                                    <button class="option-btn active rounded-lg btn-default" data-body="Default"
+                                        data-sound="play" style="cursor: pointer;">
                                         DEFAULT
                                     </button>
-                                    <button class="option-btn rounded-lg btn-blue" data-body="Default_Blue" data-sound="play" style="cursor: pointer;">
+                                    <button class="option-btn rounded-lg btn-blue" data-body="Default_Blue"
+                                        data-sound="play" style="cursor: pointer;">
                                         BLUE
                                     </button>
-                                    <button class="option-btn rounded-lg btn-purple" data-body="Default_Purple" data-sound="play" style="cursor: pointer;">
+                                    <button class="option-btn rounded-lg btn-purple" data-body="Default_Purple"
+                                        data-sound="play" style="cursor: pointer;">
                                         PURPLE
+                                    </button>
+                                    <button class="option-btn rounded-lg btn-green" data-body="Default_Green"
+                                        data-sound="play" style="cursor: pointer;">
+                                        GREEN
+                                    </button>
+                                    <button class="option-btn rounded-lg btn-orange" data-body="Default_Orange"
+                                        data-sound="play" style="cursor: pointer;">
+                                        ORANGE
+                                    </button>
+                                    <button class="option-btn rounded-lg btn-pink" data-body="Default_Pink"
+                                        data-sound="play" style="cursor: pointer;">
+                                        PINK
+                                    </button>
+                                    <button class="option-btn rounded-lg btn-red" data-body="Default_Red"
+                                        data-sound="play" style="cursor: pointer;">
+                                        RED
+                                    </button>
+                                    <button class="option-btn rounded-lg btn-yellow" data-body="Default_Yellow"
+                                        data-sound="play" style="cursor: pointer;">
+                                        YELLOW
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <!-- Hairstyle Options -->
                             <div class="customizer-panel p-2">
                                 <h3 class="category-title mb-2">HAIRSTYLE</h3>
                                 <div class="grid grid-cols-1 gap-2">
-                                    <button class="option-btn active rounded-lg btn-none" data-hair="none" data-sound="play" style="cursor: pointer;">
+                                    <button class="option-btn active rounded-lg btn-none" data-hair="none"
+                                        data-sound="play" style="cursor: pointer;">
                                         NONE
                                     </button>
-                                    <button class="option-btn rounded-lg" style="background-color: rgb(255, 127, 80); cursor: pointer;" data-hair="Hairstyle1" data-sound="play">
+                                    <button class="option-btn rounded-lg"
+                                        style="background-color: rgb(255, 127, 80); cursor: pointer;"
+                                        data-hair="Hairstyle1" data-sound="play">
                                         FLAME
                                     </button>
-                                    <button class="option-btn rounded-lg" style="background-color: rgb(255, 182, 193); cursor: pointer;" data-hair="Hairstyle2" data-sound="play">
+                                    <button class="option-btn rounded-lg"
+                                        style="background-color: rgb(255, 182, 193); cursor: pointer;"
+                                        data-hair="Hairstyle2" data-sound="play">
                                         BUNNY EARS
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <!-- Eye Color Options -->
                             <div class="customizer-panel p-2">
                                 <h3 class="category-title mb-2">EYE COLOR</h3>
                                 <div class="grid grid-cols-1 gap-2">
-                                    <button class="option-btn rounded-lg btn-none" data-eyes="none" data-sound="play" style="cursor: pointer;">
+                                    <button class="option-btn rounded-lg btn-none" data-eyes="none" data-sound="play"
+                                        style="cursor: pointer;">
                                         NONE
                                     </button>
-                                    <button class="option-btn active rounded-lg btn-black" data-eyes="Eyes" data-sound="play" style="cursor: pointer;">
+                                    <button class="option-btn active rounded-lg btn-black" data-eyes="Eyes"
+                                        data-sound="play" style="cursor: pointer;">
                                         DEFAULT
                                     </button>
-                                    <button class="option-btn rounded-lg btn-blue" data-eyes="Blue_Eyes" data-sound="play" style="cursor: pointer;">
+                                    <button class="option-btn rounded-lg btn-blue" data-eyes="Blue_Eyes"
+                                        data-sound="play" style="cursor: pointer;">
                                         BLUE
                                     </button>
-                                    <button class="option-btn rounded-lg btn-green" data-eyes="Green_Eyes" data-sound="play" style="cursor: pointer;">
+                                    <button class="option-btn rounded-lg btn-green" data-eyes="Green_Eyes"
+                                        data-sound="play" style="cursor: pointer;">
                                         GREEN
                                     </button>
-                                    <button class="option-btn rounded-lg btn-pink" data-eyes="Pink_Eyes" data-sound="play" style="cursor: pointer;">
+                                    <button class="option-btn rounded-lg btn-pink" data-eyes="Pink_Eyes"
+                                        data-sound="play" style="cursor: pointer;">
                                         PINK
                                     </button>
-                                    <button class="option-btn rounded-lg btn-purple" data-eyes="Purple_Eyes" data-sound="play" style="cursor: pointer;">
+                                    <button class="option-btn rounded-lg btn-purple" data-eyes="Purple_Eyes"
+                                        data-sound="play" style="cursor: pointer;">
                                         PURPLE
                                     </button>
-                                    <button class="option-btn rounded-lg btn-red" data-eyes="Red_Eyes" data-sound="play" style="cursor: pointer;">
+                                    <button class="option-btn rounded-lg btn-red" data-eyes="Red_Eyes" data-sound="play"
+                                        style="cursor: pointer;">
                                         RED
                                     </button>
                                 </div>
@@ -2264,7 +2369,7 @@
         <!-- Front Door Page -->
         <div id="front-door" class="room" style="background-image: url('Images/Front.gif');">
             <!--Avatar Customization Screen-->
-             
+
             <!-- Door Container - Slightly smaller -->
             <div id="door-container" style="z-index: 9998;" class="door-container">
                 <!-- Static Door Image -->
@@ -2352,20 +2457,24 @@
                 </div>
             </div>
 
-            <iframe src="Rooms/living.html" style="min-width: 100%; min-height: 100%" id="living-room" class="room pointer-events-none"></iframe>
+            <iframe src="Rooms/living.html" style="min-width: 100%; min-height: 100%" id="living-room"
+                class="room pointer-events-none"></iframe>
 
-            <iframe src="Rooms/bedroom.html" style="min-width: 100%; min-height: 100%" id="bedroom" class="room opacity-0 pointer-events-none"></iframe>
+            <iframe src="Rooms/bedroom.html" style="min-width: 100%; min-height: 100%" id="bedroom"
+                class="room opacity-0 pointer-events-none"></iframe>
 
-            <iframe src="Rooms/kitchen.html" style="min-width: 100%; min-height: 100%" id="kitchen" class="room opacity-0 pointer-events-none"></iframe>
+            <iframe src="Rooms/kitchen.html" style="min-width: 100%; min-height: 100%" id="kitchen"
+                class="room opacity-0 pointer-events-none"></iframe>
 
-            <iframe src="Rooms/garden.html" style="min-width: 100%; min-height: 100%" id="garden" class="room opacity-0 pointer-events-none"></iframe>
+            <iframe src="Rooms/garden.html" style="min-width: 100%; min-height: 100%" id="garden"
+                class="room opacity-0 pointer-events-none"></iframe>
 
         </div>
     </div>
 
     <script src="functions.js" type="text/javascript"></script>
     <script defer>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // DOM Elements
             const openBtn = document.getElementById('openCustomizer');
             const closeBtn = document.getElementById('closeCustomizer');
@@ -2394,36 +2503,36 @@
             const userLabel = document.getElementById('userLabel');
             const micButton = document.getElementById('micButton');
             const voiceIndicator = document.getElementById('voiceIndicator');
-            
+
             // Chat container state
             let isChatMinimized = false;
             const chatContainer = document.querySelector('.chat-container');
-            
+
             // Username state
             let username = "User";
-            
+
             // Voice chat state
             let isMicActive = false;
             let voiceAnimationInterval = null;
-            
+
             // Chat history
             let chatHistory = [];
-            
+
             // Avatar layers in customizer
             const bodyLayer = document.getElementById('bodyLayer');
             const hairLayer = document.getElementById('hairLayer');
             const eyesLayer = document.getElementById('eyesLayer');
-            
+
             // Main avatar layers (always visible)
             const mainBodyLayer = document.getElementById('mainBodyLayer');
             const mainHairLayer = document.getElementById('mainHairLayer');
             const mainEyesLayer = document.getElementById('mainEyesLayer');
-            
+
             // Default avatar settings
             let currentBody = "Default";
             let currentHair = "none";
             let currentEyes = "Eyes";
-            
+
             // Background settings
             const backgrounds = [
                 { name: "Background1", path: "Avatar/Images/Background1.png" },
@@ -2433,35 +2542,35 @@
                 { name: "Background5", path: "Avatar/Images/Background5.png" }
             ];
             let currentBgIndex = 0;
-            
+
             // Simulated other users
             const otherUsers = [
-                { 
-                    id: 'user1', 
-                    username: 'CoolCat42', 
-                    body: 'Default_Blue', 
-                    hair: 'Hairstyle1', 
+                {
+                    id: 'user1',
+                    username: 'CoolCat42',
+                    body: 'Default_Blue',
+                    hair: 'Hairstyle1',
                     eyes: 'Blue_Eyes',
                     position: { x: '20%', y: '60%' }
                 },
-                { 
-                    id: 'user2', 
-                    username: 'PixelPal', 
-                    body: 'Default_Purple', 
-                    hair: 'Hairstyle2', 
+                {
+                    id: 'user2',
+                    username: 'PixelPal',
+                    body: 'Default_Purple',
+                    hair: 'Hairstyle2',
                     eyes: 'Pink_Eyes',
                     position: { x: '70%', y: '70%' }
                 },
-                { 
-                    id: 'user3', 
-                    username: 'RetroGamer', 
-                    body: 'Default', 
-                    hair: 'none', 
+                {
+                    id: 'user3',
+                    username: 'RetroGamer',
+                    body: 'Default',
+                    hair: 'none',
                     eyes: 'Green_Eyes',
                     position: { x: '85%', y: '65%' }
                 }
             ];
-            
+
             // Create other users' avatars
             function createOtherUsers() {
                 otherUsers.forEach(user => {
@@ -2473,18 +2582,18 @@
                     avatar.style.top = user.position.y;
                     avatar.style.transform = 'none';
                     avatar.style.bottom = 'auto';
-                    
+
                     // Create avatar layers
                     const bodyImg = document.createElement('img');
                     bodyImg.className = 'avatar-layer';
                     bodyImg.src = `Avatar/Images/${user.body}.png`;
                     bodyImg.alt = 'Body';
-                    
+
                     const eyesImg = document.createElement('img');
                     eyesImg.className = 'avatar-layer';
                     eyesImg.src = `Avatar/Images/${user.eyes}.png`;
                     eyesImg.alt = 'Eyes';
-                    
+
                     // Add hair if present
                     if (user.hair !== 'none') {
                         const hairImg = document.createElement('img');
@@ -2493,22 +2602,22 @@
                         hairImg.alt = 'Hair';
                         avatar.appendChild(hairImg);
                     }
-                    
+
                     // Create username label
                     const label = document.createElement('div');
                     label.className = 'user-label';
                     label.textContent = user.username;
-                    
+
                     // Add elements to avatar
                     avatar.appendChild(bodyImg);
                     avatar.appendChild(eyesImg);
                     avatar.appendChild(label);
-                    
+
                     // Add avatar to document
                     document.querySelector('.avatar-customizer-container').appendChild(avatar);
                 });
             }
-            
+
             // Create background indicator dots
             function createBgIndicators() {
                 bgIndicator.innerHTML = '';
@@ -2523,12 +2632,12 @@
                     bgIndicator.appendChild(dot);
                 });
             }
-            
+
             // Set background by index
             function setBackground(index) {
                 currentBgIndex = index;
                 fittingRoom.style.backgroundImage = `url('${backgrounds[index].path}')`;
-                
+
                 // Update indicator dots
                 document.querySelectorAll('.bg-dot').forEach((dot, i) => {
                     if (i === index) {
@@ -2537,14 +2646,14 @@
                         dot.classList.remove('active');
                     }
                 });
-                
+
                 // Save background preference
                 localStorage.setItem('avatarBackground', index);
             }
-            
+
             // Initialize background indicators
             createBgIndicators();
-            
+
             // Load saved background if exists
             if (localStorage.getItem('avatarBackground')) {
                 const savedBgIndex = parseInt(localStorage.getItem('avatarBackground'));
@@ -2552,7 +2661,7 @@
                     setBackground(savedBgIndex);
                 }
             }
-            
+
             // Background navigation
             prevBgBtn.addEventListener('click', () => {
                 playButtonSound();
@@ -2560,34 +2669,34 @@
                 if (newIndex < 0) newIndex = backgrounds.length - 1;
                 setBackground(newIndex);
             });
-            
+
             nextBgBtn.addEventListener('click', () => {
                 playButtonSound();
                 let newIndex = currentBgIndex + 1;
                 if (newIndex >= backgrounds.length) newIndex = 0;
                 setBackground(newIndex);
             });
-            
+
             // Load saved avatar settings if they exist
             loadAvatarSettings();
-            
+
             // Function to load avatar settings from localStorage
             function loadAvatarSettings() {
                 // Check if user has saved avatar settings
                 if (localStorage.getItem('avatarSettings')) {
                     const savedSettings = JSON.parse(localStorage.getItem('avatarSettings'));
-                    
+
                     // Apply saved settings
                     currentBody = savedSettings.body || "Default";
                     currentHair = savedSettings.hair || "none";
                     currentEyes = savedSettings.eyes || "Eyes";
-                    
+
                     // Update avatar display in customizer
                     updateAvatarDisplay();
-                    
+
                     // Update main avatar display
                     updateMainAvatarDisplay();
-                    
+
                     // Update active buttons
                     document.querySelectorAll('[data-body]').forEach(btn => {
                         btn.classList.remove('active');
@@ -2595,14 +2704,14 @@
                             btn.classList.add('active');
                         }
                     });
-                    
+
                     document.querySelectorAll('[data-hair]').forEach(btn => {
                         btn.classList.remove('active');
                         if (btn.getAttribute('data-hair') === currentHair) {
                             btn.classList.add('active');
                         }
                     });
-                    
+
                     document.querySelectorAll('[data-eyes]').forEach(btn => {
                         btn.classList.remove('active');
                         if (btn.getAttribute('data-eyes') === currentEyes) {
@@ -2614,19 +2723,19 @@
                     updateAvatarDisplay();
                     updateMainAvatarDisplay();
                 }
-                
+
                 // Load saved position if exists
                 if (localStorage.getItem('avatarPosition')) {
                     const position = JSON.parse(localStorage.getItem('avatarPosition'));
                     mainAvatar.style.left = position.x + 'px';
                     mainAvatar.style.top = position.y + 'px';
-                    mainAvatar.style.transform = 'none';
+                    updateAvatarScale();
                     mainAvatar.style.bottom = 'auto';
                 } else {
                     // Position at bottom center by default
                     positionAvatarAtBottom();
                 }
-                
+
                 // Load saved username if exists
                 if (localStorage.getItem('username')) {
                     username = localStorage.getItem('username');
@@ -2635,25 +2744,25 @@
                     usernameModal.style.display = 'none';
                 }
             }
-            
+
             // Function to position avatar at the bottom of the screen
             function positionAvatarAtBottom() {
                 // Calculate position to place avatar at the bottom of the screen
                 // with just the top portion visible (about 1/3 of the avatar height)
                 const avatarHeight = mainAvatar.offsetHeight;
                 const visiblePortion = avatarHeight * 0.4; // Show about 40% of the avatar
-                
+
                 mainAvatar.style.bottom = (visiblePortion - avatarHeight) + 'px';
                 mainAvatar.style.left = '50%';
-                mainAvatar.style.transform = 'translateX(-50%)';
+                // mainAvatar.style.transform = 'translateX(-50%)';
                 mainAvatar.style.top = 'auto';
             }
-            
+
             // Function to update avatar display in customizer
             function updateAvatarDisplay() {
                 // Determine which body image to show based on body color and hairstyle
                 let bodyImagePath = `Avatar/Images/${currentBody}.png`;
-                
+
                 // If there's a hairstyle and it's not the default body, use the combined image
                 if (currentHair !== "none" && currentBody !== "Default") {
                     bodyImagePath = `Avatar/Images/${currentHair}_${currentBody.split('_')[1]}.png`;
@@ -2661,10 +2770,10 @@
                     // If there's a hairstyle and it's the default body
                     bodyImagePath = `Avatar/Images/${currentHair}.png`;
                 }
-                
+
                 // Set the body/hairstyle image
                 bodyLayer.src = bodyImagePath;
-                
+
                 // Set the eyes image if not none
                 if (currentEyes !== "none") {
                     eyesLayer.src = `Avatar/Images/${currentEyes}.png`;
@@ -2673,12 +2782,12 @@
                     eyesLayer.style.display = 'none';
                 }
             }
-            
+
             // Function to update main avatar display
             function updateMainAvatarDisplay() {
                 // Determine which body image to show based on body color and hairstyle
                 let bodyImagePath = `Avatar/Images/${currentBody}.png`;
-                
+
                 // If there's a hairstyle and it's not the default body, use the combined image
                 if (currentHair !== "none" && currentBody !== "Default") {
                     bodyImagePath = `Avatar/Images/${currentHair}_${currentBody.split('_')[1]}.png`;
@@ -2686,10 +2795,10 @@
                     // If there's a hairstyle and it's the default body
                     bodyImagePath = `Avatar/Images/${currentHair}.png`;
                 }
-                
+
                 // Set the body/hairstyle image
                 mainBodyLayer.src = bodyImagePath;
-                
+
                 // Set the eyes image if not none
                 if (currentEyes !== "none") {
                     mainEyesLayer.src = `Avatar/Images/${currentEyes}.png`;
@@ -2698,7 +2807,7 @@
                     mainEyesLayer.style.display = 'none';
                 }
             }
-            
+
             // Function to save avatar settings
             function saveAvatarSettings() {
                 const settings = {
@@ -2706,10 +2815,10 @@
                     hair: currentHair,
                     eyes: currentEyes
                 };
-                
+
                 localStorage.setItem('avatarSettings', JSON.stringify(settings));
             }
-            
+
             // Function to save avatar position
             function saveAvatarPosition() {
                 const rect = mainAvatar.getBoundingClientRect();
@@ -2719,37 +2828,37 @@
                 };
                 localStorage.setItem('avatarPosition', JSON.stringify(position));
             }
-            
+
             // Function to play button sound
             function playButtonSound() {
                 buttonSound.currentTime = 0;
                 buttonSound.play().catch(e => console.log("Audio play failed:", e));
             }
-            
+
             // Function to play pickup sound
             function playPickupSound() {
                 pickupSound.currentTime = 0;
                 console.log(pickupSound)
                 pickupSound.play().catch(e => console.log("Audio play failed:", e));
             }
-            
+
             // Function to play putdown sound
             function playPutdownSound() {
                 putdownSound.currentTime = 0;
                 putdownSound.play().catch(e => console.log("Audio play failed:", e));
             }
-            
+
             // Function to play chat sound
             function playChatSound() {
                 chatSound.currentTime = 0;
                 chatSound.play().catch(e => console.log("Audio play failed:", e));
             }
-            
+
             // Add sound to all buttons with data-sound attribute
             document.querySelectorAll('[data-sound="play"]').forEach(button => {
                 button.addEventListener('click', playButtonSound);
             });
-            
+
             // Open and close popup
             openBtn.addEventListener('click', () => {
                 playButtonSound();
@@ -2757,14 +2866,14 @@
                 // Hide main avatar when customizer is open
                 mainAvatar.style.display = 'none';
             });
-            
+
             closeBtn.addEventListener('click', () => {
                 playButtonSound();
                 popup.style.display = 'none';
                 // Show main avatar when customizer is closed
                 mainAvatar.style.display = 'block';
             });
-            
+
             // Close when clicking outside
             popup.addEventListener('click', (e) => {
                 if (e.target === popup) {
@@ -2774,61 +2883,61 @@
                     mainAvatar.style.display = 'block';
                 }
             });
-            
+
             // Body color selection
             document.querySelectorAll('[data-body]').forEach(button => {
                 button.addEventListener('click', () => {
                     // Update active state
                     document.querySelectorAll('[data-body]').forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
-                    
+
                     // Update body
                     currentBody = button.getAttribute('data-body');
-                    
+
                     // Update both avatar displays
                     updateAvatarDisplay();
                     updateMainAvatarDisplay();
                 });
             });
-            
+
             // Hairstyle selection
             document.querySelectorAll('[data-hair]').forEach(button => {
                 button.addEventListener('click', () => {
                     // Update active state
                     document.querySelectorAll('[data-hair]').forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
-                    
+
                     // Update hair
                     currentHair = button.getAttribute('data-hair');
-                    
+
                     // Update both avatar displays
                     updateAvatarDisplay();
                     updateMainAvatarDisplay();
                 });
             });
-            
+
             // Eye color selection
             document.querySelectorAll('[data-eyes]').forEach(button => {
                 button.addEventListener('click', () => {
                     // Update active state
                     document.querySelectorAll('[data-eyes]').forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
-                    
+
                     // Update eyes
                     currentEyes = button.getAttribute('data-eyes');
-                    
+
                     // Update both avatar displays
                     updateAvatarDisplay();
                     updateMainAvatarDisplay();
                 });
             });
-            
+
             // Save avatar with retro notification
             saveBtn.addEventListener('click', () => {
                 // Save current settings
                 saveAvatarSettings();
                 saveAvatarPosition();
-                
+
                 // Show notification
                 const notification = document.createElement('div');
                 notification.className = 'fixed top-4 right-4 bg-green-600 text-white p-3 rounded-lg shadow-lg z-50 font-["Press_Start_2P"] text-xs';
@@ -2839,167 +2948,208 @@
                 notification.style.zIndex = '10000';
                 notification.textContent = 'AVATAR SAVED!';
                 document.body.appendChild(notification);
-                
+
                 setTimeout(() => {
                     notification.remove();
                 }, 3000);
-                
+
                 // Close the customizer
                 popup.style.display = 'none';
                 // Show main avatar when customizer is closed
                 mainAvatar.style.display = 'block';
             });
-            
+
             // Make the main avatar draggable
             let isDragging = false;
             let dragOffsetX = 0;
             let dragOffsetY = 0;
-            
+
             // Always set cursor to pointer for main avatar
             mainAvatar.style.cursor = 'pointer';
-            
+
             // Mouse events for dragging
             mainAvatar.addEventListener('mousedown', startDrag);
             document.addEventListener('mousemove', drag);
             document.addEventListener('mouseup', endDrag);
-            
+
             // Touch events for mobile
             mainAvatar.addEventListener('touchstart', startDragTouch);
             document.addEventListener('touchmove', dragTouch);
             document.addEventListener('touchend', endDragTouch);
-            
+
             function startDrag(e) {
                 if (popup.style.display === 'flex') return; // Don't drag if customizer is open
-                
+
                 isDragging = true;
                 mainAvatar.classList.add('dragging');
-                
+
                 const rect = mainAvatar.getBoundingClientRect();
                 dragOffsetX = e.clientX - rect.left;
                 dragOffsetY = e.clientY - rect.top;
-                
+
                 playPickupSound();
-                
+
                 e.preventDefault();
             }
-            
+
             function drag(e) {
                 if (!isDragging) return;
-                
+
                 let newX = e.clientX - dragOffsetX;
                 let newY = e.clientY - dragOffsetY;
-                
+
                 // Keep avatar within viewport bounds with minimal margins
                 // Only add a small margin at the top to protect menu items
                 const topMargin = 20; // Reduced top margin
-                
+
                 // Calculate boundaries to ensure avatar is always visible
                 // Don't allow avatar to go off-screen
                 const minX = 0;
                 const maxX = window.innerWidth - mainAvatar.offsetWidth;
                 const minY = topMargin;
                 const maxY = window.innerHeight - mainAvatar.offsetHeight * 0.25;
-                
+
                 newX = Math.max(minX, Math.min(maxX, newX));
                 newY = Math.max(minY, Math.min(maxY, newY));
-                
+
                 mainAvatar.style.left = newX + 'px';
                 mainAvatar.style.top = newY + 'px';
-                mainAvatar.style.transform = 'none';
+                updateAvatarScale();
                 mainAvatar.style.bottom = 'auto'; // Clear bottom positioning when dragging
-                
+
                 // Update speech bubbles position
                 updateSpeechBubblesPosition();
-                
+
                 e.preventDefault();
             }
-            
+
             function endDrag() {
                 if (!isDragging) return;
-                
+
                 isDragging = false;
                 mainAvatar.classList.remove('dragging');
-                
+
                 playPutdownSound();
                 saveAvatarPosition();
             }
-            
+
             // Touch event handlers
             function startDragTouch(e) {
                 if (popup.style.display === 'flex') return; // Don't drag if customizer is open
-                
+
                 isDragging = true;
                 mainAvatar.classList.add('dragging');
-                
+
                 const rect = mainAvatar.getBoundingClientRect();
                 const touch = e.touches[0];
                 dragOffsetX = touch.clientX - rect.left;
                 dragOffsetY = touch.clientY - rect.top;
-                
+
                 playPickupSound();
-                
+
                 e.preventDefault();
             }
-            
+
             function dragTouch(e) {
                 if (!isDragging) return;
-                
+
                 const touch = e.touches[0];
                 let newX = touch.clientX - dragOffsetX;
                 let newY = touch.clientY - dragOffsetY;
-                
+
                 // Keep avatar within viewport bounds with minimal margins
                 // Only add a small margin at the top to protect menu items
                 const topMargin = 20; // Reduced top margin
-                
+
                 // Calculate boundaries to ensure avatar is always visible
                 // Don't allow avatar to go off-screen
                 const minX = 0;
                 const maxX = window.innerWidth - mainAvatar.offsetWidth;
                 const minY = topMargin;
                 const maxY = window.innerHeight - mainAvatar.offsetHeight * 0.25;
-                
+
                 newX = Math.max(minX, Math.min(maxX, newX));
                 newY = Math.max(minY, Math.min(maxY, newY));
-                
+
                 mainAvatar.style.left = newX + 'px';
                 mainAvatar.style.top = newY + 'px';
-                mainAvatar.style.transform = 'none';
+                updateAvatarScale();
                 mainAvatar.style.bottom = 'auto'; // Clear bottom positioning when dragging
-                
+
                 // Update speech bubbles position
                 updateSpeechBubblesPosition();
-                
+
                 e.preventDefault();
             }
-            
+
             function endDragTouch() {
                 if (!isDragging) return;
-                
+
                 isDragging = false;
                 mainAvatar.classList.remove('dragging');
-                
+
                 playPutdownSound();
                 saveAvatarPosition();
             }
-            
+
+            function updateAvatarScale() {
+                const avatarRect = mainAvatar.getBoundingClientRect();
+                const screenWidth = window.innerWidth;
+                const screenHeight = window.innerHeight;
+
+                // Get the avatar's base point
+                const avatarX = avatarRect.left + avatarRect.width / 2;
+                const avatarY = avatarRect.top + avatarRect.height;
+
+                // Calculate distance from bottom center (0 = front of stage)
+                const fromCenterX = Math.abs(avatarX - screenWidth / 2);
+                const fromBottomY = screenHeight - avatarY; // this should be HIGH when near bottom
+
+                // Normalize distances to range 0–1
+                const xRatio = fromCenterX / (screenWidth / 2); // 0 = center, 1 = far left/right
+                const yRatio = 1 - (fromBottomY / screenHeight); // 0 = bottom, 1 = top
+
+                // Combine into depth ratio (closer to bottom & center = smaller combined ratio)
+                const depthRatio = (xRatio * 0.3 + yRatio * 0.7);
+
+                // INVERT the depth ratio so 0 = back, 1 = front
+                const closeness = 1 - depthRatio;
+
+                // Scale between min and max
+                const minScale = 2;
+                const maxScale = 0.3;
+                const scale = minScale + (maxScale - minScale) * closeness;
+
+                // Apply transform
+                mainAvatar.style.transform = `scale(${scale})`;
+
+                // Optional: stacking order
+                mainAvatar.style.zIndex = Math.floor(avatarY);
+            }
+
+
+
+
+
+
             // Chat functionality
             function sendChat() {
                 const message = chatInput.value.trim();
                 if (message === '') return;
-                
+
                 // Play chat sound
                 playChatSound();
-                
+
+
                 // Create speech bubble
                 createSpeechBubble(message, username);
-                
+
                 // Add to chat history
                 addToChatHistory(username, message);
-                
+
                 // Clear input
                 chatInput.value = '';
-                
+
                 // Simulate other users responding occasionally
                 if (Math.random() > 0.5) {
                     setTimeout(() => {
@@ -3017,96 +3167,97 @@
                             "I'm new here!"
                         ];
                         const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
-                        
+
                         // Create speech bubble for other user
                         createOtherUserSpeechBubble(randomMessage, randomUser);
-                        
+
                         // Add to chat history
                         addToChatHistory(randomUser.username, randomMessage);
-                        
+
                         // Play chat sound
                         playChatSound();
                     }, Math.random() * 3000 + 1000);
                 }
             }
-            
+
             // Create speech bubble above avatar
             function createSpeechBubble(message, username) {
                 // Get existing bubbles
                 const existingBubbles = document.querySelectorAll('.speech-bubble[data-user="' + username + '"]');
-                
+
                 // If we already have 3 bubbles, remove the oldest one
                 if (existingBubbles.length >= 3) {
                     existingBubbles[0].remove();
                 }
-                
+
                 // Create new speech bubble
                 const bubble = document.createElement('div');
                 bubble.className = 'speech-bubble';
                 bubble.textContent = message;
                 bubble.setAttribute('data-user', username);
                 document.body.appendChild(bubble);
-                
+
                 // Position bubble above avatar
                 positionSpeechBubble(bubble, mainAvatar, existingBubbles.length);
-                
+
                 // Remove bubble after 5 seconds
                 setTimeout(() => {
                     bubble.style.animation = 'bubble-disappear 0.3s forwards';
                     setTimeout(() => bubble.remove(), 300);
                 }, 5000);
             }
-            
+
             // Create speech bubble for other users
             function createOtherUserSpeechBubble(message, user) {
                 const otherAvatar = document.getElementById(user.id);
                 if (!otherAvatar) return;
-                
+
                 // Get existing bubbles
                 const existingBubbles = document.querySelectorAll('.speech-bubble[data-user="' + user.username + '"]');
-                
+
                 // If we already have 3 bubbles, remove the oldest one
                 if (existingBubbles.length >= 3) {
                     existingBubbles[0].remove();
                 }
-                
+
                 // Create new speech bubble
                 const bubble = document.createElement('div');
                 bubble.className = 'speech-bubble';
                 bubble.textContent = message;
                 bubble.setAttribute('data-user', user.username);
                 document.body.appendChild(bubble);
-                
+
                 // Position bubble above avatar
                 positionSpeechBubble(bubble, otherAvatar, existingBubbles.length);
-                
+
                 // Remove bubble after 5 seconds
                 setTimeout(() => {
                     bubble.style.animation = 'bubble-disappear 0.3s forwards';
                     setTimeout(() => bubble.remove(), 300);
                 }, 5000);
-                
+
                 // Simulate voice chat
                 if (Math.random() > 0.7) {
                     simulateVoiceChat(user.id);
                 }
             }
-            
+
             // Position speech bubble above avatar
             function positionSpeechBubble(bubble, avatar, bubbleIndex) {
+
                 const avatarRect = avatar.getBoundingClientRect();
                 const bubbleWidth = bubble.offsetWidth;
-                
+
                 // Position bubble centered above avatar
                 // Adjust vertical position based on bubble index (0, 1, or 2)
                 // This stacks bubbles from bottom to top
                 const left = avatarRect.left + (avatarRect.width / 2) - (bubbleWidth / 2);
-                const top = avatarRect.top - bubble.offsetHeight - 20 - (bubbleIndex * (bubble.offsetHeight + 10));
-                
+                const top = avatarRect.top - bubble.offsetHeight - 20 - bubble.offsetHeight + 10;
+
                 bubble.style.left = `${left}px`;
                 bubble.style.top = `${top}px`;
             }
-            
+
             // Update all speech bubbles positions
             function updateSpeechBubblesPosition() {
                 const bubbles = document.querySelectorAll('.speech-bubble[data-user="' + username + '"]');
@@ -3114,34 +3265,34 @@
                     positionSpeechBubble(bubble, mainAvatar, index);
                 });
             }
-            
+
             // Add message to chat history
             function addToChatHistory(user, message) {
                 // Add to chat history array
                 chatHistory.push({ user, message, timestamp: new Date() });
-                
+
                 // Create message element
                 const messageElement = document.createElement('div');
                 messageElement.className = 'chat-message';
-                
+
                 const usernameElement = document.createElement('div');
                 usernameElement.className = 'username';
                 usernameElement.textContent = user;
-                
+
                 const messageTextElement = document.createElement('div');
                 messageTextElement.className = 'message-text';
                 messageTextElement.textContent = message;
-                
+
                 messageElement.appendChild(usernameElement);
                 messageElement.appendChild(messageTextElement);
-                
+
                 // Add to chat history panel
                 chatHistoryContent.appendChild(messageElement);
-                
+
                 // Scroll to bottom
                 chatHistoryContent.scrollTop = chatHistoryContent.scrollHeight;
             }
-            
+
             // Username submission
             usernameSubmit.addEventListener('click', () => {
                 const name = usernameInput.value.trim();
@@ -3151,16 +3302,16 @@
                     localStorage.setItem('username', username);
                     usernameModal.style.display = 'none';
                     playButtonSound();
-                    
+
                     // Create welcome message
                     setTimeout(() => {
                         addToChatHistory('System', `Welcome to the chat, ${username}!`);
                         createSpeechBubble(`Hi, I'm ${username}!`, username);
                     }, 500);
-                    
+
                     // Create other users
                     createOtherUsers();
-                    
+
                     // Simulate other users greeting
                     setTimeout(() => {
                         otherUsers.forEach((user, index) => {
@@ -3174,29 +3325,36 @@
                     }, 2000);
                 }
             });
-            
+
             // Allow Enter key for username submission
             usernameInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     usernameSubmit.click();
                 }
             });
-            
+
             // Chat event listeners
             sendChatBtn.addEventListener('click', sendChat);
+
             chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendChat();
+                if (e.key === 'Enter') {
+                    let existingBubbles = document.querySelectorAll('.speech-bubble[data-user="' + username + '"]');
+                    console.log(existingBubbles)
+                    existingBubbles = Array.from(existingBubbles).slice(0, -1)
+                    existingBubbles.forEach(el => { el.remove() });
+                    setTimeout(() => sendChat(), 0);
+                }
             });
-            
+
             // Make whole chat header clickable for minimize/maximize
             chatHeader.addEventListener('click', (e) => {
                 // Don't trigger if clicking on the history button
                 if (e.target === showHistoryBtn || e.target.parentNode === showHistoryBtn) {
                     return;
                 }
-                
+
                 playButtonSound();
-                
+
                 if (isChatMinimized) {
                     // Maximize
                     chatContainer.style.height = 'auto';
@@ -3210,49 +3368,49 @@
                     chatInput.style.display = 'none';
                     sendChatBtn.style.display = 'none';
                     document.querySelector('.voice-controls').style.display = 'none';
-                    minimizeChatBtn.textContent = '□'; 
+                    minimizeChatBtn.textContent = '□';
                 }
-                
+
                 isChatMinimized = !isChatMinimized;
             });
-            
+
             // Chat history panel controls
             showHistoryBtn.addEventListener('click', () => {
                 playButtonSound();
-                chatHistoryPanel.style.display = (chatHistoryPanel.style.display == 'flex' ? 'none' : 'flex');
+                chatHistoryPanel.style.display = chatHistoryPanel.style.display == 'none' ? 'none' : 'flex';
             });
-            
+
             closeHistoryBtn.addEventListener('click', () => {
                 playButtonSound();
                 chatHistoryPanel.style.display = 'none';
             });
-            
+
             // Voice chat controls
             micButton.addEventListener('click', () => {
                 playButtonSound();
                 isMicActive = !isMicActive;
-                
+
                 if (isMicActive) {
                     // Activate microphone
                     micButton.classList.add('active');
                     voiceIndicator.classList.add('speaking');
-                    
+
                     // Create speech bubble to indicate voice chat
                     createSpeechBubble("🎤 Voice chat active", username);
-                    
+
                     // Add system message to chat history
                     addToChatHistory('System', `${username} started voice chat`);
-                    
+
                     // Simulate voice activity
                     simulateVoiceChat('mainAvatar');
                 } else {
                     // Deactivate microphone
                     micButton.classList.remove('active');
                     voiceIndicator.classList.remove('speaking');
-                    
+
                     // Add system message to chat history
                     addToChatHistory('System', `${username} ended voice chat`);
-                    
+
                     // Clear any voice animation interval
                     if (voiceAnimationInterval) {
                         clearInterval(voiceAnimationInterval);
@@ -3260,12 +3418,12 @@
                     }
                 }
             });
-            
+
             // Simulate voice chat activity
             function simulateVoiceChat(avatarId) {
                 const avatar = document.getElementById(avatarId);
                 if (!avatar) return;
-                
+
                 // Create voice indicator if it doesn't exist
                 let voiceIcon = avatar.querySelector('.voice-icon');
                 if (!voiceIcon) {
@@ -3283,20 +3441,20 @@
                     voiceIcon.style.justifyContent = 'center';
                     voiceIcon.style.alignItems = 'center';
                     voiceIcon.style.zIndex = '9994';
-                    
+
                     // Create speaker icon
                     const speakerSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                     speakerSvg.setAttribute('width', '20');
                     speakerSvg.setAttribute('height', '20');
                     speakerSvg.setAttribute('viewBox', '0 0 24 24');
                     speakerSvg.setAttribute('fill', '#f8e8b0');
-                    
+
                     const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                     path1.setAttribute('d', 'M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z');
-                    
+
                     speakerSvg.appendChild(path1);
                     voiceIcon.appendChild(speakerSvg);
-                    
+
                     // Create voice bars
                     const voiceBars = document.createElement('div');
                     voiceBars.className = 'voice-indicator speaking';
@@ -3304,20 +3462,20 @@
                     voiceBars.style.bottom = '-15px';
                     voiceBars.style.left = '50%';
                     voiceBars.style.transform = 'translateX(-50%)';
-                    
+
                     for (let i = 0; i < 5; i++) {
                         const bar = document.createElement('div');
                         bar.className = 'voice-bar';
                         voiceBars.appendChild(bar);
                     }
-                    
+
                     voiceIcon.appendChild(voiceBars);
                     avatar.appendChild(voiceIcon);
                 }
-                
+
                 // Show voice icon
                 voiceIcon.style.display = 'flex';
-                
+
                 // Remove after random time (2-5 seconds)
                 const duration = Math.random() * 3000 + 2000;
                 setTimeout(() => {
@@ -3328,34 +3486,44 @@
                     }
                 }, duration);
             }
-            
+
             // Set pointer cursor for all interactive elements
             document.querySelectorAll('button, .option-btn, .bg-nav-arrow, .bg-dot, .avatar').forEach(element => {
                 element.style.cursor = 'pointer';
             });
-            
+
             // Make sure the page stretches to fill the window
             function setFullHeight() {
                 document.documentElement.style.height = '100%';
                 document.body.style.height = '100%';
             }
-            
+
+            //Update Avatar scale on page load
+            window.addEventListener('load', () => {
+                updateAvatarScale();
+            });
+
+            //Update avatar scale with window resize
+            window.addEventListener('resize', () => {
+                updateAvatarScale();
+            });
+
             // Call on load and resize
             setFullHeight();
             window.addEventListener('resize', setFullHeight);
-            
+
             // Reposition speech bubbles when window is resized
             window.addEventListener('resize', updateSpeechBubblesPosition);
-            
+
             // Add event listener to update speech bubble position during drag
             document.addEventListener('mousemove', () => {
                 if (isDragging) updateSpeechBubblesPosition();
             });
-            
+
             document.addEventListener('touchmove', () => {
                 if (isDragging) updateSpeechBubblesPosition();
             });
-            
+
             // Simulate occasional chat from other users
             function simulateOtherUserChats() {
                 setInterval(() => {
@@ -3374,19 +3542,19 @@
                             "Hello everyone!"
                         ];
                         const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
-                        
+
                         // Create speech bubble for other user
                         createOtherUserSpeechBubble(randomMessage, randomUser);
-                        
+
                         // Add to chat history
                         addToChatHistory(randomUser.username, randomMessage);
-                        
+
                         // Play chat sound
                         playChatSound();
                     }
                 }, 15000); // Every 15 seconds there's a chance
             }
-            
+
             // Start simulation after a delay
             setTimeout(simulateOtherUserChats, 5000);
         });

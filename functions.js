@@ -1330,7 +1330,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Set pointer cursor for all interactive elements
-    document.querySelectorAll('button, .option-btn, .bg-nav-arrow, .bg-dot, .avatar').forEach(element => {
+    document.querySelectorAll('button, .option-btn, .bg-nav-arrow, .bg-dot').forEach(element => {
         element.style.cursor = 'pointer';
     });
 
